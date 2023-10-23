@@ -1,0 +1,6 @@
+import { validateNameFunctionalWay3 } from './base/Either/9-either-chain-2.js'
+import { oExampleImproved } from './base/Option/10-conditional-gates.js'
+import { validatePasswordAllErrors } from './base/Either/10-validation-form.js'
+import { replicate, printFib } from './base/functional-design/3. Monoid.js'
+import { fib, program, time, withLogging } from './base/functional-design/4. Time combinator.js'
+import { io } from 'fp-ts'

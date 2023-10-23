@@ -1,0 +1,42 @@
+{
+  "compilerOptions": {
+    "module": "commonjs",
+    "moduleResolution": "Node",
+    "target": "ESNext",
+    "lib": ["DOM", "ESNext"],
+    "esModuleInterop": true,
+
+    "rootDir": ".",
+    "baseUrl": ".",
+    "outDir": "build",
+
+    "sourceMap": true,
+    "declaration": true,
+
+    "forceConsistentCasingInFileNames": true,
+    "importHelpers": true,
+    "resolveJsonModule": true,
+    "allowSyntheticDefaultImports": true,
+
+    "alwaysStrict": true,
+    "skipLibCheck": true,
+    "strictBindCallApply": false,
+    "strictPropertyInitialization": false,
+    "strict": true,
+    "strictNullChecks": true,
+
+    "noFallthroughCasesInSwitch": true,
+    "noImplicitReturns": true,
+    "noUnusedLocals": false,
+    "noUnusedParameters": false,
+    "noImplicitAny": false,
+    "noImplicitThis": false,
+
+    "incremental": true,
+    "jsx": "preserve",
+    "allowJs": true,
+    "typeRoots": ["./node_modules/@types", "global.d.ts"]
+  },
+  "include": ["src/**/*", "__tests__/**/*", "*.d.ts", "./jest.config.cjs",],
+  "exclude": ["node_modules", "dist", "build"]
+}
