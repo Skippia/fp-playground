@@ -3,7 +3,7 @@ class MeasurePerformance {
 
   public static start(id?: string): string {
     const start = performance.now()
-    const _id = id ? id : String(start)
+    const _id = id || String(start)
 
     this.queue.set(_id, start)
 
@@ -28,4 +28,4 @@ class MeasurePerformance {
 
 type TMeasurePerformance = typeof MeasurePerformance
 
-export { type TMeasurePerformance, MeasurePerformance }
+export { MeasurePerformance, type TMeasurePerformance }

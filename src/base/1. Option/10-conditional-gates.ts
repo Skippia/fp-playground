@@ -1,6 +1,6 @@
-import * as O from 'fp-ts/Option'
 import * as A from 'fp-ts/Array'
 import { pipe } from 'fp-ts/lib/function'
+import * as O from 'fp-ts/Option'
 
 function example1(a: string): O.Option<string> {
   if (!a.startsWith('lovely')) {
@@ -11,7 +11,7 @@ function example1(a: string): O.Option<string> {
 }
 
 function example1Improved(a: string): O.Option<string> {
-  return O.fromPredicate((a: string) => a.startsWith('lovely'))(a)
+  return O.fromPredicate((a2: string) => a2.startsWith('lovely'))(a)
 }
 
 // ---------------------------------------------
@@ -31,7 +31,7 @@ const oExample = (a: string | null): O.Option<string> =>
     O.flatMap(O.fromPredicate(containsMeet))
   )
 
-//---------------------------------------------
+// ---------------------------------------------
 type TCondition = (a: string) => boolean
 const conditions = [startsWithLovely, containsMeet, endsWithYou] as TCondition[]
 

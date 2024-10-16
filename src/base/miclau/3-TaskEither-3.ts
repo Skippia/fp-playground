@@ -2,12 +2,12 @@
  * Independent Promises
  */
 
-import * as TE from 'fp-ts/TaskEither'
-import * as E from 'fp-ts/Either'
-import * as A from 'fp-ts/Array'
-import * as T from 'fp-ts/Task'
-import { pipe } from 'fp-ts/function'
 import { monoid } from 'fp-ts'
+import * as A from 'fp-ts/Array'
+import type * as E from 'fp-ts/Either'
+import { pipe } from 'fp-ts/function'
+import * as T from 'fp-ts/Task'
+import * as TE from 'fp-ts/TaskEither'
 
 /**
  * To put it simply, Traverse helps you to switch the order between traversable containers.
@@ -37,12 +37,12 @@ const timerToTaskEither = TE.tryCatchK(
   (timer: number) =>
     timer < 1500
       ? new Promise<string>((resolve) => {
-          setTimeout(() => resolve(`Promise with timer ${timer} resolved`), timer)
-        })
+        setTimeout(() => resolve(`Promise with timer ${timer} resolved`), timer)
+      })
       : new Promise<string>((_, reject) => {
-          setTimeout(() => reject(`Promise with timer ${timer} rejected`), timer)
-        }),
-  (reason) => new Error(String(reason))
+        setTimeout(() => reject(`Promise with timer ${timer} rejected`), timer)
+      }),
+  reason => new Error(String(reason))
 )
 
 export declare const traverseArray: <A, B, E>(
@@ -59,7 +59,8 @@ const monadicWay = async () => {
 
   try {
     const result = await traverseExample()
-  } catch (error) {
+  }
+  catch (error) {
     console.error(error)
   }
 }
@@ -81,9 +82,7 @@ const monadicWayImproved = async () => {
 
   const promiseAllWithTaskEither = TE.tryCatchK(
     (promiseArr: Promise<string>[]) => Promise.all(promiseArr),
-    (reason) => {
-      return new Error(String(reason))
-    }
+    reason => new Error(String(reason))
   )
   try {
     const getResult = pipe(
@@ -91,17 +90,18 @@ const monadicWayImproved = async () => {
       A.map((timer: number) =>
         timer < 1500
           ? new Promise<string>((resolve) => {
-              setTimeout(() => resolve(`Promise with timer ${timer} resolved`), timer)
-            })
+            setTimeout(() => resolve(`Promise with timer ${timer} resolved`), timer)
+          })
           : new Promise<string>((_, reject) => {
-              setTimeout(() => reject(`Promise with timer ${timer} rejected`), timer)
-            })
+            setTimeout(() => reject(`Promise with timer ${timer} rejected`), timer)
+          })
       ),
       promiseAllWithTaskEither
     )
 
     const result = await getResult() // ?
-  } catch (error) {
+  }
+  catch (error) {
     console.error(error)
   }
 }
@@ -141,7 +141,8 @@ const applicativeWay = async () => {
     )
 
     const result = await getResult() // ?
-  } catch (error) {
+  }
+  catch (error) {
     console.error(error)
   }
 }

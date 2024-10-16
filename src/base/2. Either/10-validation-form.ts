@@ -1,16 +1,17 @@
+import { sequenceT } from 'fp-ts/Apply'
 import * as E from 'fp-ts/Either'
 import { pipe } from 'fp-ts/lib/function'
-import { NonEmptyArray, getSemigroup } from 'fp-ts/NonEmptyArray'
-import { sequenceT } from 'fp-ts/Apply'
+import type { NonEmptyArray } from 'fp-ts/NonEmptyArray'
+import { getSemigroup } from 'fp-ts/NonEmptyArray'
 
 const minLength = (s: string): E.Either<string, string> =>
   s.length >= 6 ? E.right(s) : E.left('at least 6 characters')
 
 const oneCapital = (s: string): E.Either<string, string> =>
-  /[A-Z]/g.test(s) ? E.right(s) : E.left('at least one capital letter')
+  /[A-Z]/.test(s) ? E.right(s) : E.left('at least one capital letter')
 
 const oneNumber = (s: string): E.Either<string, string> =>
-  /[0-9]/g.test(s) ? E.right(s) : E.left('at least one number')
+  /\d/.test(s) ? E.right(s) : E.left('at least one number')
 
 const validatePasswordFirstError = (s: string): E.Either<string, string> =>
   pipe(
@@ -29,10 +30,10 @@ validatePasswordFirstError('xzx') // ?
 const applicativeValidation = E.getApplicativeValidation(getSemigroup<string>())
 
 function lift<E, A>(check: (a: A) => E.Either<E, A>): (a: A) => E.Either<NonEmptyArray<E>, A> {
-  return (a) =>
+  return a =>
     pipe(
       check(a),
-      E.mapLeft((a) => [a])
+      E.mapLeft(a => [a])
     )
 }
 
@@ -54,14 +55,14 @@ validatePasswordAllErrors('xzx1') // ?
 
 // --------------------Appendix-------------------------
 
-interface Person {
+type Person = {
   name: string
   age: number
 }
 
 const toPerson = ([name, age]: [string, number]): Person => ({
   name,
-  age,
+  age
 })
 
 const validateName = (s: string): E.Either<NonEmptyArray<string>, string> =>

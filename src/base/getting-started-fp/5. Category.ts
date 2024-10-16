@@ -9,8 +9,8 @@
  * ! A category is a pair (Objects, Morphisms) where:
  * ? Objects is a collection of objects
  * ? Morphisms is a collection of morphisms (or arrows) between the objects
- * * Note. The term "object" here has nothing to do with OOP,
- * * you can think of objects as black boxes you can't inspect, or even as some kind of ancillary placeholders for morphisms.
+ * Note. The term "object" here has nothing to do with OOP,
+ * you can think of objects as black boxes you can't inspect, or even as some kind of ancillary placeholders for morphisms.
  * ------
  * ? Each morphism f has a source object A and a target object B where A and B are in Objects.
  * ? We write f: A ⟼ B, and we say "f is a morphism from A to B".
@@ -19,13 +19,13 @@
 /**
  * ! Part II (Composition)
  * ? There's an operation ∘, named "composition", such that the following properties must hold
- * * 1. (composition of morphisms) whenever f: A ⟼ B and g: B ⟼ C are two morphism in Morphisms
- * * then it must exist a third morphism g ∘ f: A ⟼ C in Morphisms which is the composition of f and g
+ * 1. (composition of morphisms) whenever f: A ⟼ B and g: B ⟼ C are two morphism in Morphisms
+ * then it must exist a third morphism g ∘ f: A ⟼ C in Morphisms which is the composition of f and g
  * -----
- * * 2. (associativity) if f: A ⟼ B, g: B ⟼ C and h: C ⟼ D then h ∘ (g ∘ f) = (h ∘ g) ∘ f
+ * 2. (associativity) if f: A ⟼ B, g: B ⟼ C and h: C ⟼ D then h ∘ (g ∘ f) = (h ∘ g) ∘ f
  * -----
- * * 3. (identity) for every object X, there exists a morphism identity: X ⟼ X called the identity morphism for X,
- * * such that for every morphism f: A ⟼ X and every morphism g: X ⟼ B, we have (identity ∘ f = f) and (g ∘ identity = g).
+ * 3. (identity) for every object X, there exists a morphism identity: X ⟼ X called the identity morphism for X,
+ * such that for every morphism f: A ⟼ X and every morphism g: X ⟼ B, we have (identity ∘ f = f) and (g ∘ identity = g).
  * ! https://res.cloudinary.com/practicaldev/image/fetch/s--m_VM8n97--/c_limit%2Cf_auto%2Cfl_progressive%2Cq_auto%2Cw_880/https://upload.wikimedia.org/wikipedia/commons/thumb/f/ff/Category_SVG.svg/1920px-Category_SVG.svg.png
  */
 
@@ -77,7 +77,7 @@ function h(s: string): boolean {
  */
 
 function compose<A, B, D>(g: (b: B) => D, f: (a: A) => B): (a: A) => D {
-  return (a) => g(f(a))
+  return a => g(f(a))
 }
 
 /**

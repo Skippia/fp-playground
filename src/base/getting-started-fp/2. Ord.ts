@@ -2,18 +2,18 @@
  * ! Order concept
  */
 
-import { Eq } from 'fp-ts/Eq'
+import type { Eq } from 'fp-ts/Eq'
 import * as Ord from 'fp-ts/Ord'
 
 type Ordering = -1 | 0 | 1
 
-interface _Ord<A> extends Eq<A> {
+type _Ord<A> = {
   readonly compare: (x: A, y: A) => Ordering
-}
+} & Eq<A>
 
 const _ordNumber: _Ord<number> = {
   equals: (x, y) => x === y,
-  compare: (x, y) => (x < y ? -1 : x > y ? 1 : 0),
+  compare: (x, y) => (x < y ? -1 : x > y ? 1 : 0)
 }
 
 //* Note. A lawful equals can be derived from compare in the following way
@@ -27,7 +27,7 @@ function min<A>(O: Ord.Ord<A>): (x: A, y: A) => A {
 
 min(ordNumber)(11, 4) // ?
 
-//------------------------------------------------------------
+// ------------------------------------------------------------
 type User = {
   name: string
   age: number
@@ -35,7 +35,7 @@ type User = {
 
 const __byAge: Ord.Ord<User> = {
   equals: (x: User, y: User) => ordNumber.compare(x.age, y.age) === 0,
-  compare: (x: User, y: User) => ordNumber.compare(x.age, y.age),
+  compare: (x: User, y: User) => ordNumber.compare(x.age, y.age)
 }
 const _byAge: Ord.Ord<User> = Ord.fromCompare((x, y) => ordNumber.compare(x.age, y.age))
 const byAge: Ord.Ord<User> = Ord.contramap((user: User) => user.age)(ordNumber)

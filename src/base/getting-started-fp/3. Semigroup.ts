@@ -1,9 +1,9 @@
+import * as A from 'fp-ts/Array'
+import * as B from 'fp-ts/lib/boolean'
+import { getSemigroup, pipe } from 'fp-ts/lib/function'
+import * as O from 'fp-ts/lib/Option'
 import * as Or from 'fp-ts/Ord'
 import * as S from 'fp-ts/Semigroup'
-import * as O from 'fp-ts/lib/Option'
-import * as B from 'fp-ts/lib/boolean'
-import * as A from 'fp-ts/Array'
-import { getSemigroup, pipe } from 'fp-ts/lib/function'
 /**
  * ? A semigroup is a pair (A, *) in which A is a non-empty set and * is a binary associative operation on A,
  * ? i.e. a function that takes two elements of A as input and returns an element of A as output...
@@ -46,14 +46,14 @@ import { getSemigroup, pipe } from 'fp-ts/lib/function'
 
 /** number `Semigroup` under multiplication */
 const semigroupProduct: S.Semigroup<number> = {
-  concat: (x, y) => x * y,
+  concat: (x, y) => x * y
 }
 /** number `Semigroup` under addition */
 const semigroupSum: S.Semigroup<number> = {
-  concat: (x, y) => x + y,
+  concat: (x, y) => x + y
 }
 const semigroupString: S.Semigroup<string> = {
-  concat: (x, y) => x + y,
+  concat: (x, y) => x + y
 }
 /**
  * What if, given a type A,
@@ -107,15 +107,15 @@ type Point = {
 const semigroupPoint: S.Semigroup<Point> = {
   concat: (p1, p2) => ({
     x: semigroupSum.concat(p1.x, p2.x),
-    y: semigroupSum.concat(p1.y, p2.y),
-  }),
+    y: semigroupSum.concat(p1.y, p2.y)
+  })
 }
 
 semigroupPoint.concat({ x: 4, y: 1 }, { x: 2, y: 9 }) // ?
 
 const _semigroupPoint: S.Semigroup<Point> = S.struct({
   x: semigroupSum,
-  y: semigroupSum,
+  y: semigroupSum
 })
 
 type Vector = {
@@ -125,7 +125,7 @@ type Vector = {
 
 const semigroupVector: S.Semigroup<Vector> = S.struct({
   from: semigroupPoint,
-  to: semigroupPoint,
+  to: semigroupPoint
 })
 
 semigroupVector.concat(
@@ -146,7 +146,7 @@ isPositiveXY({ x: 1, y: -1 }) // ?
 isPositiveXY({ x: -1, y: 1 }) // ?
 isPositiveXY({ x: -1, y: -1 }) // ?
 
-//--------------------------------------------------
+// --------------------------------------------------
 
 /**
  * ! Folding
@@ -188,7 +188,7 @@ _S.concat(O.some(1), O.some(2)) // ?
 /**
  * Appendix
  */
-interface Customer {
+type Customer = {
   name: string
   favouriteThings: Array<string>
   registeredAt: number // since epoch
@@ -211,7 +211,7 @@ const semigroupCustomer: S.Semigroup<Customer> = S.struct({
   // keep the most recent date
   lastUpdatedAt: S.max(Or.ordNumber),
   // Boolean semigroup under disjunction
-  hasMadePurchase: B.SemigroupAny,
+  hasMadePurchase: B.SemigroupAny
 })
 
 semigroupCustomer.concat(
@@ -220,14 +220,14 @@ semigroupCustomer.concat(
     favouriteThings: ['math', 'climbing'],
     registeredAt: new Date(2018, 1, 20).getTime(),
     lastUpdatedAt: new Date(2018, 2, 18).getTime(),
-    hasMadePurchase: false,
+    hasMadePurchase: false
   },
   {
     name: 'Giulio Canti',
     favouriteThings: ['functional programming'],
     registeredAt: new Date(2018, 1, 22).getTime(),
     lastUpdatedAt: new Date(2018, 2, 9).getTime(),
-    hasMadePurchase: true,
+    hasMadePurchase: true
   }
 ) // ?
 /*

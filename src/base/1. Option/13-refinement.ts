@@ -1,6 +1,6 @@
-import * as O from 'fp-ts/Option'
 import { pipe } from 'fp-ts/function'
-import { Predicate } from 'fp-ts/lib/Predicate'
+import type { Predicate } from 'fp-ts/lib/Predicate'
+import * as O from 'fp-ts/Option'
 
 type SearchType = 'Book' | 'Chapter' | 'Verse' | 'None'
 
@@ -27,7 +27,7 @@ function getFromPredicate(
   return pipe(
     search,
     O.fromPredicate(predicate),
-    O.map((_) => typeString)
+    O.map(_ => typeString)
   )
 }
 
@@ -59,11 +59,19 @@ const bookSearch: BibleSearch = { book: O.some('Job'), chapter: O.none, verse: O
 getSearchType(bookSearch) // ?
 
 // Should return "Chapter"
-const chapterSearch: BibleSearch = { book: O.some('Job'), chapter: O.some(1), verse: O.none }
+const chapterSearch: BibleSearch = {
+  book: O.some('Job'),
+  chapter: O.some(1),
+  verse: O.none
+}
 getSearchType(chapterSearch) // ?
 
 // Should return "Verse"
-const verseSearch: BibleSearch = { book: O.some('Job'), chapter: O.some(1), verse: O.some(3) }
+const verseSearch: BibleSearch = {
+  book: O.some('Job'),
+  chapter: O.some(1),
+  verse: O.some(3)
+}
 getSearchType(verseSearch) // ?
 
 // Should return "None"

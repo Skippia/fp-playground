@@ -1,5 +1,5 @@
-import * as O from 'fp-ts/Option'
 import { pipe } from 'fp-ts/lib/function'
+import * as O from 'fp-ts/Option'
 
 type Movie = Readonly<{
   title: string
@@ -12,26 +12,26 @@ const movie1: Movie = {
   title: 'The King',
   releaseYear: 2018,
   ratingPosition: 1,
-  award: 'Oscar',
+  award: 'Oscar'
 }
 
 const movie2: Movie = {
   title: 'Natural transformation',
   releaseYear: 2023,
-  ratingPosition: 3,
+  ratingPosition: 3
 }
 
 const movie3: Movie = {
   title: 'Fun with loops',
   releaseYear: 2023,
-  ratingPosition: 74,
+  ratingPosition: 74
 }
 
 const getMovieAwardHighlight = (movie: Movie): O.Option<string> =>
   pipe(
     movie.award,
     O.fromNullable,
-    O.map((award) => `Awarded with ${award}`)
+    O.map(award => `Awarded with ${award}`)
   )
 
 const getMovieTop10Highlight = (movie: Movie): O.Option<string> =>

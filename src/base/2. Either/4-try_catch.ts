@@ -23,11 +23,11 @@ type JsonParseError = Readonly<{
 
 const jsonParse3: (text: string) => E.Either<JsonParseError, unknown> = E.tryCatchK(
   JSON.parse,
-  (e) => ({
+  e => ({
     type: 'JsonParseError',
-    error: E.toError(e),
+    error: E.toError(e)
   })
 )
 
-jsonParse3(`{"foo": "bar"}`) // ?
-jsonParse3(`"foo": "bar"}`) // ?
+jsonParse3('{"foo": "bar"}') // ?
+jsonParse3('"foo": "bar"}') // ?

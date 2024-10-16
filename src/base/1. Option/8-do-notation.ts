@@ -1,5 +1,5 @@
-import * as O from 'fp-ts/Option'
 import { pipe } from 'fp-ts/lib/function'
+import * as O from 'fp-ts/Option'
 
 function example1() {
   const aOpt = O.fromNullable(3)
@@ -18,11 +18,11 @@ function example1() {
 example1() // ?
 
 // --------------------------------------------------
-interface UserScore {
+type UserScore = {
   score: number | null
 }
 
-interface User {
+type User = {
   username: string
   score: UserScore['score']
 }

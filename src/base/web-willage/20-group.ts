@@ -10,13 +10,13 @@
  * Group encodes the concept of symmetry
  */
 
-interface Group<A> {
+type Group<A> = {
   concat: (x: A, y: A) => A
   empty: A
   inverse: (a: A) => A
 }
 
-// Symmetry of trianle is simmertic regarding 120 deg * N + flipping around any axes
+// Symmetry of triangle is simmertic regarding 120 deg * N + flipping around any axes
 
 // Example ==================================================
 
@@ -24,7 +24,7 @@ interface Group<A> {
 const addGroup: Group<number> = {
   concat: (x, y) => x + y,
   empty: 0,
-  inverse: (a) => -a,
+  inverse: a => -a
 }
 
 const walletBalance = addGroup.concat(
@@ -47,7 +47,7 @@ const alphabets = 'abcdefghijklmnopqrstuvwxyz'
 const caesarGroup: Group<number> = {
   concat: (x, y) => (x + y) % alphabets.length,
   empty: 0,
-  inverse: (a) => (alphabets.length - a) % alphabets.length,
+  inverse: a => (alphabets.length - a) % alphabets.length
 }
 
 const encrypt: Encrypt = (plainText, shift) =>

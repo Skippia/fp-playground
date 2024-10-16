@@ -9,14 +9,14 @@
  * These functions help you to avoid unnecessary unwrapping and wrapping the values between several TaskEither container
  */
 
-import * as TE from 'fp-ts/TaskEither'
+import axios from 'axios'
 import * as E from 'fp-ts/Either'
 import { identity, pipe } from 'fp-ts/function'
-import axios from 'axios'
+import * as TE from 'fp-ts/TaskEither'
 
 const fetchAPI = TE.tryCatchK(
   (url: string) => axios.get(url),
-  (reason) => new Error(String(reason))
+  reason => new Error(String(reason))
 )
 
 const withoutUsingDoNotation = async () => {
@@ -45,13 +45,14 @@ const withoutUsingDoNotation = async () => {
     const tokenResult = tokenResultInEither.right
 
     // Use both the token and id to fetch orders
-    //@ts-expect-error ...
+    // @ts-expect-error ...
     const fetchOrdersUrl = `https://fetchOrdersExample?token=${token}&id=${userId}`
     const ordersEitherResultInTaskEither = pipe(fetchOrdersUrl, fetchAPI)
     const ordersResultInEither = await ordersEitherResultInTaskEither()
 
     // Continue with the result ....
-  } catch (error) {
+  }
+  catch (error) {
     console.error(error)
   }
 }
@@ -118,7 +119,8 @@ const main = async () => {
         identity
       )
     )
-  } catch (error) {
+  }
+  catch (error) {
     console.error(error)
   }
 }
@@ -159,7 +161,7 @@ const bind = (keyname, fn) => (ma) => {
         }
         return TE.right({
           ...a.right,
-          [keyname]: fn(a.right),
+          [keyname]: fn(a.right)
         })
       })
   )

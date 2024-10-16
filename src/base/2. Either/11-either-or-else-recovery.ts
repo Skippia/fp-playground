@@ -1,6 +1,8 @@
 import * as E from 'fp-ts/Either'
 import { flow, pipe } from 'fp-ts/lib/function'
 
+const _ = console.log
+
 type Email = Readonly<{
   type: 'Email'
   value: string
@@ -28,14 +30,14 @@ type InvalidPhoneNumber = Readonly<{
 }>
 // ===========================
 
-const emailRegex =
-  /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+const emailRegex
+  = /^(?:[^<>()[\]\\.,;:\s@"]+(?:\.[^<>()[\]\\.,;:\s@"]+)*|".+")@(?:\[\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\]|(?:[a-z\-0-9]+\.)+[a-z]{2,})$/i
 
-const phoneNumberRegex = /^[+]?[(]?[0-9]{3}[)]?[-\s.]?[0-9]{3}[-\s.]?[0-9]{4,6}$/
+const phoneNumberRegex = /^\+?\(?\d{3}\)?[-\s.]?\d{3}[-\s.]?\d{4,6}$/
 
 const validateEmail = E.fromPredicate(
   (maybeEmail: string) => emailRegex.test(maybeEmail),
-  (invalidEmail) => (invalidEmail.includes('@') ? 'Malformed email' : 'Not a email')
+  invalidEmail => (invalidEmail.includes('@') ? 'Malformed email' : 'Not a email')
 )
 
 const validatePhoneNumber = E.fromPredicate(
@@ -47,18 +49,14 @@ const validateLoginName = (loginName: string) =>
   pipe(
     loginName,
     validateEmail,
-    E.orElseW((e) =>
-      e === 'Not a email'
-        ? validatePhoneNumber(loginName) //
-        : E.left(e)
-    )
+    E.orElseW(e => (e === 'Not a email' ? validatePhoneNumber(loginName) : E.left(e)))
   )
 
-validateLoginName('user@example.com') // ?
-validateLoginName('user@example.') // ?
+console.log(validateLoginName('user@example.com'))
+console.log(validateLoginName('user@example.'))
 
-validateLoginName('1234567890') // ?
-validateLoginName('foo 123') // ?
+console.log(validateLoginName('1234567890'))
+console.log(validateLoginName('foo 123'))
 
 // ----------------------------------------------------
 
@@ -73,7 +71,7 @@ const _validateEmailFlow = flow(
   E.map(
     (email): Email => ({
       type: 'Email',
-      value: email,
+      value: email
     })
   )
 )
@@ -83,13 +81,13 @@ const _validatePhoneNumberFlow = flow(
     (maybePhoneNumber: string) => phoneNumberRegex.test(maybePhoneNumber),
     (): InvalidPhoneNumber => ({
       type: 'InvalidPhoneNumber',
-      error: new Error('Invalid phone number'),
+      error: new Error('Invalid phone number')
     })
   ),
   E.map(
     (phoneNumber): PhoneNumber => ({
       type: 'PhoneNumber',
-      value: phoneNumber,
+      value: phoneNumber
     })
   )
 )
@@ -109,8 +107,8 @@ const _validateLoginName = (loginName: string) =>
     )
   )
 
-_validateLoginName('user@example.com') // ?
-_validateLoginName('user@example.') // ?
+console.log(_validateLoginName('user@example.com'))
+console.log(_validateLoginName('user@example.'))
 
-_validateLoginName('1234567890') // ?
-_validateLoginName('foo 123') // ?
+console.log(_validateLoginName('1234567890'))
+console.log(_validateLoginName('foo 123'))

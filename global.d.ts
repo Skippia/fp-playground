@@ -1,4 +1,4 @@
-import { type TMeasurePerformance } from './src/shared'
+import type { TMeasurePerformance } from './src/shared'
 
 declare global {
   const MeasurePerformance: TMeasurePerformance

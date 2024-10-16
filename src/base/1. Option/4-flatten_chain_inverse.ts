@@ -1,11 +1,11 @@
-import * as O from 'fp-ts/Option'
 import { pipe } from 'fp-ts/lib/function'
+import * as O from 'fp-ts/Option'
 /**
  * inverseHead = inverseHead2 = inverseHead3
  */
 
 export function head<A>(as: ReadonlyArray<A>): O.Option<A> {
-  return as.length === 0 ? O.none : O.some(as[0])
+  return as[0] === undefined ? O.none : O.some(as[0])
 }
 
 const inverse = (x: number): O.Option<number> => (x === 0 ? O.none : O.some(1 / x))

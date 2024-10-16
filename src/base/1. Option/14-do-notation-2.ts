@@ -1,5 +1,5 @@
-import * as O from 'fp-ts/Option'
 import { pipe } from 'fp-ts/lib/function'
+import * as O from 'fp-ts/Option'
 
 function doubler(n: number): O.Option<number> {
   return O.some(n * 2)

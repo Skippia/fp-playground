@@ -1,7 +1,6 @@
-import { Url } from 'url'
 import * as A from 'fp-ts/Array'
-import * as O from 'fp-ts/Option'
 import { pipe } from 'fp-ts/lib/function'
+import * as O from 'fp-ts/Option'
 
 function isDotComImperativeWay(url: string): boolean {
   try {
@@ -9,7 +8,8 @@ function isDotComImperativeWay(url: string): boolean {
     const domain = parsedUrl.split('.').pop()
 
     return domain === 'com'
-  } catch {
+  }
+  catch {
     return false
   }
 }
@@ -28,7 +28,7 @@ function isDotComFunctionalWay(url: string): boolean {
     url,
     tryToParseURL,
     O.flatMap(tryToExtractDomain),
-    O.map((domain) => domain === 'com'),
+    O.map(domain => domain === 'com'),
     O.getOrElse(() => false)
   )
 }

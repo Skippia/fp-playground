@@ -12,7 +12,7 @@ O.fromNullable(3) // ?
 /**
  * Exact same things
  */
-const a = O.some(3) //?
-const b = O.of(3) //?
+const a = O.some(3) // ?
+const b = O.of(3) // ?
 
 //

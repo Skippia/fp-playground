@@ -1,16 +1,16 @@
 import * as E from 'fp-ts/Either'
 import { flow } from 'fp-ts/lib/function'
 
-interface Person {
+type Person = {
   name: string
 }
 
 const goodPerson = {
-  name: 'John',
+  name: 'John'
 }
 
 const wrongPerson = {
-  name: '!!!!',
+  name: '!!!!'
 }
 
 /**
@@ -18,12 +18,12 @@ const wrongPerson = {
  * ? regardless of whether it is valid or not?
  */
 function validateNameImperativeWay(name: string) {
-  return /[a-zA-z]/.test(name) ? name : 'not a valid name!'
+  return /^[A-Z][a-z]+$/.test(name) ? name : 'not a valid name!'
 }
 
 const validateNameFunctionalWay1 = E.fromPredicate(
-  (string: string) => /[a-zA-z]/.test(string),
-  (name) => `"${name}" is not a valid name!`
+  (string: string) => /^[A-Z][a-z]+$/.test(string),
+  name => `"${name}" is not a valid name!`
 )
 
 validateNameImperativeWay(goodPerson.name) // ?
@@ -33,23 +33,23 @@ validateNameFunctionalWay1(wrongPerson.name) // ?
 
 // ---------------------------------------------
 
-const regexLetters = /[a-zA-z]/
+const regexLetters = /^[A-Z][a-z]+$/
 
 const validateName: (name: string) => E.Either<string, string> = E.fromPredicate(
-  (name) => regexLetters.test(name), // returns name if this function returns `true`
-  (name) => `"${name}" is not a valid name!` // returns `fallback` if this function returns `false`
+  name => regexLetters.test(name), // returns name if this function returns `true`
+  name => `"${name}" is not a valid name!` // returns `fallback` if this function returns `false`
 )
 
 const makeUser: (name: string) => E.Either<Error, Person> = flow(
   validateName,
   E.map((name): Person => ({ name })),
-  E.mapLeft((message) => new Error(message))
+  E.mapLeft(message => new Error(message))
 )
 
 export const validateNameFunctionalWay2: (name: string) => string | Person = flow(
   makeUser,
   E.match(
-    (error) => error.message,
+    error => error.message,
     ({ name }) => `Hi, my name is "${name}"`
   )
 )
@@ -59,7 +59,7 @@ export const validateNameFunctionalWay2: (name: string) => string | Person = flo
  */
 export const validateNameFunctionalWay3: (name: string) => string | Person = flow(
   makeUser,
-  E.getOrElseW((error) => error.message)
+  E.getOrElseW(error => error.message)
 )
 
 validateNameFunctionalWay2(goodPerson.name) // ?

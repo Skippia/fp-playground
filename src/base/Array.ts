@@ -52,16 +52,16 @@ function doSomethingFunctionalize(arr1: Array<number>, arr2: Array<number>): num
 function composeSometing(arr1: Array<number>, arr2: Array<number>): number {
   return pipe(
     A.zip(arr1, arr2),
-    A.map((pair) => Math.max(...pair)),
+    A.map(pair => Math.max(...pair)),
     A.reduce(0, (a, b) => a + b)
   )
 }
 
 function pipeVsFlow(word: string) {
   /**
-   * * const f = <A>(a: A) => pipe(a, g1, g2, g3, ...gs)
-   * * can be replaced with
-   * * const f2 = flow(g1, g2, g3, ...gs)
+   * const f = <A>(a: A) => pipe(a, g1, g2, g3, ...gs)
+   * can be replaced with
+   * const f2 = flow(g1, g2, g3, ...gs)
    * ------------------------
    *  const flow =
    *     <A, B, C>(

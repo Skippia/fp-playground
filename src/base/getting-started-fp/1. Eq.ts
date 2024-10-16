@@ -1,5 +1,5 @@
-import * as Eq from 'fp-ts/Eq'
 import * as A from 'fp-ts/Array'
+import * as Eq from 'fp-ts/Eq'
 
 /**
  * ! Equality concept
@@ -9,7 +9,7 @@ import * as A from 'fp-ts/Array'
  * ? a type A belongs to type class Eq
  * ? if there is a function named equal of the appropriate type, defined on it
  */
-interface _Eq<A> {
+type _Eq<A> = {
   /** returns `true` if `x` is equal to `y` */
   readonly equals: (x: A, y: A) => boolean
 }
@@ -20,11 +20,11 @@ interface _Eq<A> {
  * ? 3. Transitivity: if equals(x, y) === true and equals(y, z) === true, then equals(x, z) === true, for all x, y, z in A
  */
 const eqNumber: Eq.Eq<number> = {
-  equals: (x, y) => x === y,
+  equals: (x, y) => x === y
 }
 
 function elemIsIn<A>(E: Eq.Eq<A>): (a: A, arr: Array<A>) => boolean {
-  return (a, arr) => arr.some((item) => E.equals(item, a))
+  return (a, arr) => arr.some(item => E.equals(item, a))
 }
 
 elemIsIn(eqNumber)(1, [1, 2, 3]) // ?
@@ -38,12 +38,12 @@ type Point = {
 }
 
 const _eqPoint: Eq.Eq<Point> = {
-  equals: (p1, p2) => p1.x === p2.x && p1.y === p2.y,
+  equals: (p1, p2) => p1.x === p2.x && p1.y === p2.y
 }
 
 const eqPoint: Eq.Eq<Point> = Eq.struct({
   x: eqNumber,
-  y: eqNumber,
+  y: eqNumber
 })
 
 type Vector = {
@@ -53,7 +53,7 @@ type Vector = {
 
 const eqVector: Eq.Eq<Vector> = Eq.struct({
   from: eqPoint,
-  to: eqPoint,
+  to: eqPoint
 })
 
 const eqArrayOfPoints: Eq.Eq<Array<Point>> = A.getEq(eqPoint)
@@ -71,21 +71,21 @@ eqVector.equals(
 eqArrayOfPoints.equals(
   [
     { x: 3, y: 4 },
-    { x: 1, y: 2 },
+    { x: 1, y: 2 }
   ],
   [
     { x: 1, y: 2 },
-    { x: 3, y: 4 },
+    { x: 3, y: 4 }
   ]
 ) // ?
 eqArrayOfPoints.equals(
   [
     { x: 1, y: 2 },
-    { x: 3, y: 4 },
+    { x: 3, y: 4 }
   ],
   [
     { x: 1, y: 2 },
-    { x: 3, y: 4 },
+    { x: 3, y: 4 }
   ]
 ) // ?
 

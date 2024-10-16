@@ -1,8 +1,5 @@
-import * as F from 'fp-ts/Functor'
-import * as O from 'fp-ts/Option'
-import * as T from 'fp-ts/Task'
 import * as A from 'fp-ts/Array'
-import * as Apply from 'fp-ts/Apply'
+import * as O from 'fp-ts/Option'
 
 /**
  * f: (a: A) => M<B>
@@ -12,7 +9,7 @@ import * as Apply from 'fp-ts/Apply'
  */
 
 // ? Example M = Array
-interface User {
+type User = {
   followers: User[]
 }
 
@@ -23,7 +20,7 @@ declare const user: User
 const _followersOfFollowers: User[][] = getFollowers(user).map(getFollowers)
 const followersOfFollowers: Array<User> = A.flatten(getFollowers(user).map(getFollowers))
 
-//? Example (M = Option)
+// ? Example (M = Option)
 const inverse = (n: number): O.Option<number> => (n === 0 ? O.none : O.some(1 / n))
 
 const _inverseHead: O.Option<O.Option<number>> = O.option.map(A.head([1, 2, 3]), inverse)

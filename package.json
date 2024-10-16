@@ -1,55 +1,56 @@
 {
   "name": "fp-playground",
+  "type": "commonjs",
   "version": "1.0.0",
   "description": "Explore opportunities of functional programming through the prism of typescript and `fp-ts`",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Skippia/fp-playground"
+  },
   "keywords": [
     "functional-programming",
     "fp-ts",
     "monad",
     "promises"
   ],
-  "type": "commonjs",
   "types": "global.d.ts",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/Skippia/fp-playground"
-  },
   "scripts": {
     "dev": "nodemon -e ts --watch src .env --exec \"tsc -p tsconfig.json --incremental && node --no-warnings ./build/src/main.js\"",
     "start:debug": "node --inspect-brk ./build/src/main.js",
     "ts:check": "tsc --noEmit",
+    "format": "prettier --config .prettierrc.cjs --write .",
     "prebuild": "rm -rf build && npm run lint",
     "build": "tsc -p tsconfig.json",
     "build:watch": "tsc -w -p tsconfig.json",
     "build:release": "npm run clean && tsc -p tsconfig.release.json",
-    "lint": "eslint . --ext .ts --ext .mts --fix",
-    "format": "prettier --config .prettierrc.cjs --write .",
+    "eslint": "npx eslint .",
+    "eslint:fix": "npx eslint . --fix",
     "test": "jest --coverage",
     "test:watch": "jest --watch"
-  },
-  "devDependencies": {
-    "@types/base-64": "^1.0.2",
-    "@types/node": "~22",
-    "@typescript-eslint/eslint-plugin": "~8.8.1",
-    "@typescript-eslint/parser": "~8.8.1",
-    "eslint": "~9.12",
-    "eslint-config-prettier": "~9.1.0",
-    "eslint-plugin-jest": "~28.8",
-    "eslint-plugin-prettier": "^5.2.1",
-    "nodemon": "^3.1.7",
-    "prettier": "~3.3",
-    "rimraf": "~6.0",
-    "ts-jest": "~29.2",
-    "ts-node": "^10.9.2",
-    "tsx": "^4.19.1"
   },
   "dependencies": {
     "axios": "^1.7.7",
     "base-64": "^1.0.0",
     "fp-ts": "^2.16.9",
     "ts-adt": "^2.1.2",
-    "tslib": "~2.7",
+    "tslib": "~2.8",
     "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "@antfu/eslint-config": "^3.7.3",
+    "@types/base-64": "^1.0.2",
+    "@types/jest": "^29.5.13",
+    "@types/node": "^22.7.5",
+    "eslint": "^9.12.0",
+    "eslint-plugin-functional": "^7.0.2",
+    "nodemon": "^3.1.7",
+    "prettier": "^3.3.3",
+    "rimraf": "~6.0",
+    "ts-jest": "~29.2",
+    "ts-node": "^10.9.2",
+    "tsx": "^4.19.1",
+    "typescript": "^5.6.3",
+    "typescript-eslint": "^8.9.0"
   }
 }

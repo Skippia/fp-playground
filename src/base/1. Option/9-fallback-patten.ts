@@ -1,8 +1,6 @@
-import * as O from 'fp-ts/Option'
 import * as A from 'fp-ts/Array'
 import { pipe } from 'fp-ts/lib/function'
-
-/* eslint-disable newline-per-chained-call */
+import * as O from 'fp-ts/Option'
 
 function badExample() {
   const aOpt = O.fromNullable(1)
@@ -16,7 +14,7 @@ badExample() // ?
 function goodExample() {
   const userSetting: O.Option<string> = O.none
   const companySetting: O.Option<string> = O.none
-  const defaultSetting: string = 'yellow'
+  const defaultSetting = 'yellow'
 
   return pipe(
     userSetting,

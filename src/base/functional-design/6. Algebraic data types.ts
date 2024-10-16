@@ -16,7 +16,7 @@ type Fst = Tuple2[0] // string
 type Snd = Tuple2[1] // number
 
 // I = {"name", "age"}
-interface Person {
+type Person = {
   name: string
   age: number
 }
@@ -45,7 +45,7 @@ type Clock = [Hour, Period] // ? The Clock type has 12 * 2 = 24 inhabitants.
  * ? i.e. the value of Hour doesn't affect the value of Period and vice versa, all pairs are legal and meaningful.
  */
 
-//-----------------------------------------------------------------------------------------------------------------------
+// -----------------------------------------------------------------------------------------------------------------------
 // ! Sum type:
 
 /**
@@ -57,19 +57,19 @@ type Clock = [Hour, Period] // ? The Clock type has 12 * 2 = 24 inhabitants.
 // Example - redux actions
 type Action =
   | {
-      type: 'ADD_TODO'
-      text: string
-    }
+    type: 'ADD_TODO'
+    text: string
+  }
   | {
-      type: 'UPDATE_TODO'
-      id: number
-      text: string
-      completed: boolean
-    }
+    type: 'UPDATE_TODO'
+    id: number
+    text: string
+    completed: boolean
+  }
   | {
-      type: 'DELETE_TODO'
-      id: number
-    }
+    type: 'DELETE_TODO'
+    id: number
+  }
 //
 
 /**
@@ -77,19 +77,19 @@ type Action =
  */
 const add = (text: string): Action => ({
   type: 'ADD_TODO',
-  text,
+  text
 })
 
 const update = (id: number, text: string, completed: boolean): Action => ({
   type: 'UPDATE_TODO',
   id,
   text,
-  completed,
+  completed
 })
 
 const del = (id: number): Action => ({
   type: 'DELETE_TODO',
-  id,
+  id
 })
 
 /**
@@ -98,7 +98,7 @@ const del = (id: number): Action => ({
 
 // Example (linked lists)
 //        ↓ type parameter
-type List<A> = { type: 'Empty' } | { type: 'Element'; value: A; next: List<A> }
+type List<A> = { type: 'Empty' } | { type: 'Element', value: A, next: List<A> }
 //                                                              ↑ recursion
 
 /**
@@ -124,9 +124,9 @@ const list: List<string> = {
     type: 'Element',
     value: 'b', //
     next: {
-      type: 'Empty', //
-    },
-  },
+      type: 'Empty' //
+    }
+  }
 }
 
 length(list) // ?
@@ -143,9 +143,9 @@ length(list) // ?
 type Option<A> =
   | { type: 'None' }
   | {
-      type: 'Some'
-      value: A
-    }
+    type: 'Some'
+    value: A
+  }
 // ? From the general formula C(Option<A>) = 1 + C(A),
 // ? we can derive for example the cardinality of Option<boolean>: 1 + 2 = 3 inhabitants.
 
@@ -156,18 +156,18 @@ type Option<A> =
 
 // Example (component props)
 
-interface Props {
+type Props = {
   editable: boolean
   onChange?: (text: string) => void
 }
 
-//@ts-expect-error react demo
+// @ts-expect-error react demo
 class Textbox extends React.Component<Props> {
   render() {
-    //@ts-expect-error react demo
+    // @ts-expect-error react demo
     if (this.props.editable) {
       // error: Cannot invoke an object which is possibly 'undefined' :(
-      //@ts-expect-error react demo
+      // @ts-expect-error react demo
       this.props.onChange()
     }
   }
@@ -180,20 +180,20 @@ class Textbox extends React.Component<Props> {
 
 type _Props =
   | {
-      type: 'READONLY'
-    }
+    type: 'READONLY'
+  }
   | {
-      type: 'EDITABLE'
-      onChange: (text: string) => void
-    }
+    type: 'EDITABLE'
+    onChange: (text: string) => void
+  }
 
-//@ts-expect-error react demo
+// @ts-expect-error react demo
 class _Textbox extends React.Component<Props> {
   render() {
-    //@ts-expect-error react demo
+    // @ts-expect-error react demo
     switch (this.props.type) {
       case 'EDITABLE':
-        //@ts-expect-error react demo
+        // @ts-expect-error react demo
         this.props.onChange() // :)
       // ...
     }
@@ -232,7 +232,7 @@ type CallbackArgs = [Error | undefined, string | undefined]
  * either an error with no data or data with no error as a result of the readFile callback.
  * This better represents the dependency between the error and data components.
  */
-type CallbackResult = { error: Error; data: undefined } | { error: undefined; data: string }
+type CallbackResult = { error: Error, data: undefined } | { error: undefined, data: string }
 
 declare function readFile(path: string, callback: (result: CallbackResult) => void): void
 

@@ -8,8 +8,8 @@
  * transform it into the "Container" world, then you have a Functor! (Well, you still need to fulfil the Functor laws :) )
  */
 
-import { URI, Option } from 'fp-ts/lib/Option'
-import { Pointed1 } from 'fp-ts/lib/Pointed'
+import type { Option, URI } from 'fp-ts/lib/Option'
+import type { Pointed1 } from 'fp-ts/lib/Pointed'
 
 /**
  * The Map and Return function type signature in a functor
@@ -66,11 +66,11 @@ exports.of = exports.some
  * There are two functor laws you need to follow
  * if you are going to create your own functor: identity law and composition law.
 
-  * 1. identity law:
-  *   map(id) = id
+ * 1. identity law:
+ *   map(id) = id
 
-  * 2. composition law:
-  *   map(compose(f, g)) = compose(map(f), map(g))
+ * 2. composition law:
+ *   map(compose(f, g)) = compose(map(f), map(g))
  */
 
 /**

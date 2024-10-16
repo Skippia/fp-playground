@@ -1,4 +1,4 @@
-import { Option } from 'fp-ts/lib/Option'
+import type { Option } from 'fp-ts/lib/Option'
 /**
  * When you provide a apply function that takes a function which is wrapped with a "Container"
  * and transform it into a corresponding function in the "Container" world, it becomes "Applicative".
@@ -41,8 +41,8 @@ const ap = function (fa) {
     return (0, exports.isNone)(fab)
       ? exports.none
       : (0, exports.isNone)(fa)
-      ? exports.none
-      : (0, exports.some)(fab.value(fa.value))
+          ? exports.none
+          : (0, exports.some)(fab.value(fa.value))
   }
 }
 

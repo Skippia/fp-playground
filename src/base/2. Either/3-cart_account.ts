@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import * as E from 'fp-ts/Either'
 import { pipe } from 'fp-ts/lib/function'
 import { makeMatch } from 'ts-adt/MakeADT'
@@ -37,8 +36,8 @@ function _checkout(cart: Cart) {
       account,
       pay(cart.total),
       E.match(
-        (e) => 'Handle error',
-        (a) => 'Handle success'
+        e => 'Handle error',
+        a => 'Handle success'
       )
     )
 }
@@ -48,8 +47,8 @@ function pay(amount: number) {
     account.frozen
       ? E.left({ type: 'AccountFrozen', message: 'Account frozen' })
       : account.balance < amount
-      ? E.left({ type: 'NotEnoughBalance', message: 'Not enough balance' })
-      : E.right({ ...account, balance: account.balance - amount })
+        ? E.left({ type: 'NotEnoughBalance', message: 'Not enough balance' })
+        : E.right({ ...account, balance: account.balance - amount })
 }
 
 const matchError = makeMatch('type')
@@ -64,10 +63,10 @@ function checkout(cart: Cart) {
       pay(cart.total),
       E.match(
         matchError({
-          AccountFrozen: (e) => `${e.message} - [unfreeze your account]`,
-          NotEnoughBalance: (e) => `${e.message} - [fill your wallet]`,
+          AccountFrozen: e => `${e.message} - [unfreeze your account]`,
+          NotEnoughBalance: e => `${e.message} - [fill your wallet]`
         }),
-        (a) => 'Handle success'
+        a => 'Handle success'
       )
     )
 }
@@ -75,25 +74,25 @@ const cart: Cart = {
   items: [
     {
       name: 'item1',
-      price: 50,
-    },
+      price: 50
+    }
   ],
-  total: 50,
+  total: 50
 }
 
 const account1: Account = {
   balance: 70,
-  frozen: false,
+  frozen: false
 }
 
 const account2: Account = {
   balance: 30,
-  frozen: false,
+  frozen: false
 }
 
 const account3: Account = {
   balance: 100,
-  frozen: true,
+  frozen: true
 }
 
 checkout(cart)(account1) // ?

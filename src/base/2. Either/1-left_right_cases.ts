@@ -1,5 +1,5 @@
-import { pipe } from 'fp-ts/lib/function'
 import * as E from 'fp-ts/lib/Either'
+import { pipe } from 'fp-ts/lib/function'
 /**
  * ! Working with Eithers when we have Rights
  * We can use map (from Functor) or chain (from Monad).
@@ -14,29 +14,29 @@ const badValue: E.Either<Error, string> = E.left(new Error('Bad'))
 
 const betterValue = pipe(
   goodValue, //* Right<value>
-  E.map((value) => `${value} is now 'better'`) //* Right<value> ==> Right<value*>
+  E.map(value => `${value} is now 'better'`) //* Right<value> ==> Right<value*>
 )
 
 const worseValue = pipe(
   goodValue, //* Right<value>
-  E.map((value) => E.left(new Error(`Nothing can be ${value} in 2020`))), //* Right<value> ==> Right<Left<value*>>
+  E.map(value => E.left(new Error(`Nothing can be ${value} in 2020`))), //* Right<value> ==> Right<Left<value*>>
   E.flatten //* Right<Left<value*>> ==> Left<value*>>
 )
 /**
  * ? Summary:
- * * 1. We can mutate right (Right<value> ==> Right<value*>)
- * * 2. We can convert right to left (Right<value> ==> Left<value*>)
+ * 1. We can mutate right (Right<value> ==> Right<value*>)
+ * 2. We can convert right to left (Right<value> ==> Left<value*>)
  */
 
-//----------------------------------------------------------------------------------
+// ----------------------------------------------------------------------------------
 /**
- * ! Working with Eithers when we have Lefts
+ * ! Working with Either when we have Lefts
  */
 
 // We can modify the error using mapLeft:
 const crypticError: E.Either<number, string> = pipe(
   worseValue, //* Left<value>
-  E.mapLeft((err) => err.message.length) //* Left<value> ==> Left<value*>
+  E.mapLeft(err => err.message.length) //* Left<value> ==> Left<value*>
 )
 // Provide alternative value
 const improvedValue = pipe(
@@ -47,22 +47,24 @@ const improvedValue = pipe(
 // Provide alternative values while peeking at the error:
 const optimisticValue = pipe(
   worseValue, //* Left<value>
-  E.getOrElse((err) => E.right(`${err.message}. But there's always 2021.`)) //* Left<value> ==> Right<value*>
+  E.getOrElse(err => E.right(`${err.message}. But there's always 2021.`)) //* Left<value> ==> Right<value*>
 )
 // !Note: we don’t necessarily have to provide a right. We can map an error to another error, for instance.
 
 /**
- * Taking things out of Eithers
+ * Taking things out of Either
  */
 if (E.isLeft(worseValue)) {
   // worseValue.left will be available
-} else {
+}
+else {
   // worseValue.right will be available
 }
 
 if (E.isRight(worseValue)) {
   // worseValue.right will be available
-} else {
+}
+else {
   // worseValue.left will be available
 }
 
@@ -74,7 +76,7 @@ if (E.isRight(worseValue)) {
 // * getOrElse requires us to define a way to build an A from an E:
 const mehValue = pipe(
   worseValue, //* Left<value>
-  E.getOrElse((err) => `I used to be ${err}. Now I'm free`) //* Left<value> ==> value*
+  E.getOrElse(err => `I used to be ${err}. Now I'm free`) //* Left<value> ==> value*
 )
 
 // * fold requires us to provide mappings from E and A to a common type B:
@@ -82,7 +84,7 @@ const answer1 = pipe(
   improvedValue, //* Right<value>
   E.match(
     () => 42,
-    (value) => value.length // * Right<value> ==> value*
+    value => value.length // * Right<value> ==> value*
   )
 )
 const answer2 = pipe(
@@ -102,16 +104,16 @@ const answer2 = pipe(
 
 /**
  * ? Summary:
- * * 1. We can mutate left (Left<value> ==> Left<value*>)
- * * 2. We can provide alternative for left (Left<value> ==> Right<X>)
- * * 3. We can convert left to right (Left<value> ==> Right<value*>)
- * * 4. We can extract value from left (Left<value> ==> value*)
- * * 5. We can extract value from right (Right<value> ==> value*)
+ * 1. We can mutate left (Left<value> ==> Left<value*>)
+ * 2. We can provide alternative for left (Left<value> ==> Right<X>)
+ * 3. We can convert left to right (Left<value> ==> Right<value*>)
+ * 4. We can extract value from left (Left<value> ==> value*)
+ * 5. We can extract value from right (Right<value> ==> value*)
  */
 
 /**
- * * (Left | Right)<value> <==> (Left | Right)<value*>
- * * (Left | Right)<value> ==> value*
- * * Left<value> => Right<X>
- * * Right<value> => Left<X>
+ * (Left | Right)<value> <==> (Left | Right)<value*>
+ * (Left | Right)<value> ==> value*
+ * Left<value> => Right<X>
+ * Right<value> => Left<X>
  */

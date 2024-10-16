@@ -1,5 +1,5 @@
+import { flow, pipe } from 'fp-ts/function'
 import * as O from 'fp-ts/Option'
-import { pipe, flow } from 'fp-ts/function'
 
 type Address = {
   addressLine1: string
@@ -14,7 +14,7 @@ type Person = {
 
 const getAddressLine2Final = flow(
   O.fromNullableK((person: Person) => person.address),
-  O.map((address) =>
+  O.map(address =>
     pipe(
       O.fromNullable(address.addressLine2),
       O.getOrElse(() => 'address line 2 not found')
@@ -28,22 +28,22 @@ const personA = {
   age: 20,
   address: {
     addressLine1: 'hehe',
-    addressLine2: 'haha',
-  },
+    addressLine2: 'haha'
+  }
 }
 const personB = {
   name: 'A',
   age: 20,
   address: {
-    addressLine1: 'hehe',
-  },
+    addressLine1: 'hehe'
+  }
 }
 
 const personC = {
   name: 'A',
-  age: 20,
+  age: 20
 }
 
-pipe(personA, getAddressLine2Final) //?
-pipe(personB, getAddressLine2Final) //?
-pipe(personC, getAddressLine2Final) //?
+pipe(personA, getAddressLine2Final) // ?
+pipe(personB, getAddressLine2Final) // ?
+pipe(personC, getAddressLine2Final) // ?

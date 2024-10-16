@@ -1,6 +1,7 @@
 import axios from 'axios'
-import { pipe } from 'fp-ts/function'
 import * as E from 'fp-ts/Either'
+import { pipe } from 'fp-ts/function'
+
 import { getAllResults } from './3-TaskEither-2'
 
 const notOnRight = (result: unknown) => {
@@ -22,26 +23,26 @@ describe('test taskEither Do notation', () => {
   // Mock data
   const userDataMock = {
     data: {
-      id: 'idMock',
-    },
+      id: 'idMock'
+    }
   }
 
   const tokenDataMock = {
     data: {
-      token: 'tokenMock',
-    },
+      token: 'tokenMock'
+    }
   }
 
   const ordersDataMock = {
     data: {
-      orders: [{ id: '飓', name: 'demo' }],
-    },
+      orders: [{ id: '飓', name: 'demo' }]
+    }
   }
   const userNotFoundErrorMock = 'user not found'
   const tokenNotFoundErrorMock = 'token not found'
   const ordersNotFoundErrorMock = 'orders not found'
 
-  describe('Case 1: All fetch are successful', () => {
+  describe('case 1: All fetch are successful', () => {
     it('should return the final result with user, token, orders data', async () => {
       mockedAxios.get.mockResolvedValueOnce(userDataMock)
       mockedAxios.get.mockResolvedValueOnce(tokenDataMock)
@@ -50,7 +51,7 @@ describe('test taskEither Do notation', () => {
       const expectedOutput = {
         userResult: userDataMock,
         tokenResult: tokenDataMock,
-        ordersResult: ordersDataMock,
+        ordersResult: ordersDataMock
       }
       const onRight = (result: unknown) => {
         console.log('Case 1 result: ', result)
@@ -60,7 +61,7 @@ describe('test taskEither Do notation', () => {
       pipe(resultE, E.match(notOnLeft, onRight))
     })
   })
-  describe('Case 2: Fetch user failed', () => {
+  describe('case 2: Fetch user failed', () => {
     it('should return error message user not found', async () => {
       mockedAxios.get.mockRejectedValueOnce(userNotFoundErrorMock)
       mockedAxios.get.mockRejectedValueOnce(tokenNotFoundErrorMock)
@@ -75,7 +76,7 @@ describe('test taskEither Do notation', () => {
       pipe(resultE, E.match(onLeft, notOnRight))
     })
   })
-  describe('Case 3: Fetch user successful but fetch token failed ', () => {
+  describe('case 3: Fetch user successful but fetch token failed ', () => {
     it('should return error message token not found', async () => {
       mockedAxios.get.mockResolvedValueOnce(userDataMock)
       mockedAxios.get.mockRejectedValueOnce(tokenNotFoundErrorMock)
@@ -90,7 +91,7 @@ describe('test taskEither Do notation', () => {
       pipe(resultE, E.match(onLeft, notOnRight))
     })
   })
-  describe('Case 4: Fetch user and token successful but fetch orders failed ', () => {
+  describe('case 4: Fetch user and token successful but fetch orders failed ', () => {
     it('should return error message orders not found', async () => {
       const errorMock = 'orders not found'
       mockedAxios.get.mockResolvedValueOnce(userDataMock)

@@ -1,9 +1,9 @@
 /**
- * * type _Option = Some<A> | None
- * * type _Nullable<A> = A | null | undefined
+ * type _Option = Some<A> | None
+ * type _Nullable<A> = A | null | undefined
  */
-import * as O from 'fp-ts/Option'
 import { pipe } from 'fp-ts/lib/function'
+import * as O from 'fp-ts/Option'
 
 const inverse = (x: number): O.Option<number> => (x === 0 ? O.none : O.some(1 / x))
 
@@ -16,7 +16,7 @@ const getUIMessageWithInverse = (x: number): string =>
     inverse,
     O.match(
       () => `Cannot get the inverse of ${x}`,
-      (ix) => `The inverse of ${x} is ${ix}`
+      ix => `The inverse of ${x} is ${ix}`
     )
   )
 const getUIMessageWithInverseOtherType = (x: number): number | string =>
@@ -25,7 +25,7 @@ const getUIMessageWithInverseOtherType = (x: number): number | string =>
     inverse,
     O.matchW(
       () => 0,
-      (ix) => `The inverse of ${x} is ${ix}`
+      ix => `The inverse of ${x} is ${ix}`
     )
   )
 
@@ -35,4 +35,4 @@ getUIMessageWithInverse(2) // ?
 getUIMessageWithInverseOtherType(0) // ?
 getUIMessageWithInverseOtherType(2) // ?
 
-//----------------------------------------------------
+// ----------------------------------------------------

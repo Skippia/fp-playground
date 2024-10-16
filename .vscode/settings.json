@@ -5,7 +5,7 @@
     "editor.defaultFormatter": "rvest.vs-code-prettier-eslint"
   },
   "[typescript]": {
-    "editor.defaultFormatter": "rvest.vs-code-prettier-eslint"
+    "editor.defaultFormatter": "vscode.typescript-language-features"
   },
   "[jsonc]": {
     "editor.defaultFormatter": "rvest.vs-code-prettier-eslint"
@@ -15,5 +15,9 @@
   },
   "editor.codeActionsOnSave": {
     "source.fixAll.eslint": "explicit"
-  }
+  },
+  "cSpell.words": [
+    "antfu",
+    "monoid"
+  ]
 }

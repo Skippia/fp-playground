@@ -20,13 +20,15 @@
  * }
  */
 
-import * as O from 'fp-ts/Option'
 import * as E from 'fp-ts/Either'
 import { flow } from 'fp-ts/lib/function'
-import { List, cons, nil, match as matchList, showList } from './13-list_linked-list'
+import * as O from 'fp-ts/Option'
+
+import type { List } from './13-list_linked-list'
+import { cons, match as matchList, nil, showList } from './13-list_linked-list'
 
 type StrLength = (x: string) => number
-const strLength: StrLength = (x) => x.length
+const strLength: StrLength = x => x.length
 
 strLength('abcd') // ?
 
@@ -37,18 +39,18 @@ const strLength1: OptionStrLength = O.match(
   (value: string) => O.some(strLength(value))
 )
 
-strLength1(O.some('abcd')) //?
-strLength1(O.none) //?
+strLength1(O.some('abcd')) // ?
+strLength1(O.none) // ?
 
 // ========================================
 type Increment = (x: number) => number
-const increment: Increment = (x) => x + 1
+const increment: Increment = x => x + 1
 
 type OptionIncrement = (Fx: O.Option<number>) => O.Option<number>
 // Kinda adapter
 const increment1: OptionIncrement = O.match(
   () => O.none,
-  (value) => O.some(increment(value))
+  value => O.some(increment(value))
 )
 
 increment1(O.some(12)) // ?
@@ -58,16 +60,16 @@ increment1(O.none) // ?
 
 type MapOption = <A, B>(f: (x: A) => B) => (Fx: O.Option<A>) => O.Option<B>
 // Kinda universal adapter
-const mapOption: MapOption = (f) =>
+const mapOption: MapOption = f =>
   O.match(
     () => O.none,
-    (value) => O.some(f(value))
+    value => O.some(f(value))
   )
 
 const strLength2 = mapOption(strLength)
 const increment2 = mapOption(increment)
 
-strLength2(O.some('abcd')) //?
+strLength2(O.some('abcd')) // ?
 strLength2(O.none)
 
 increment2(O.some(12)) // ?
@@ -80,7 +82,7 @@ increment2(O.none)
  */
 const incrementLength = flow(strLength, increment)
 
-incrementLength('abcd') //?
+incrementLength('abcd') // ?
 
 const function1 = flow(mapOption(strLength), mapOption(increment))
 const function2 = mapOption(flow(strLength, increment))
@@ -98,7 +100,7 @@ const list1: List<string> = cons('a', cons('bb', cons('ccc', nil)))
 
 type MapList = <A, B>(f: (x: A) => B) => (Fx: List<A>) => List<B>
 // Kinda adapter (functor)
-const mapList: MapList = (f) =>
+const mapList: MapList = f =>
   matchList(
     () => nil,
     (head, tail) => cons(f(head), mapList(f)(tail))
@@ -108,15 +110,22 @@ const strLength3 = mapList(strLength)
 showList(strLength3(list1)) // ?
 
 const increment3 = mapList(increment)
-showList(increment3(list1)) // ?
+
+// F g ∘ F f
+const incrLength = flow(mapList(strLength), mapList(increment))
+const _incrLength = flow(strLength3, increment3)
+// F (g ∘ F)
+const __incrLength = flow(mapList(flow(strLength, increment)))
+
+console.log(showList(incrLength(list1)))
 
 // E.Either<E,A>
 
 type MapEither = <A, B, E>(f: (x: A) => B) => (Fx: E.Either<E, A>) => E.Either<E, B>
-const mapEither: MapEither = (f) =>
+const mapEither: MapEither = f =>
   E.match(
-    (e) => E.left(e),
-    (a) => E.right(f(a))
+    e => E.left(e),
+    a => E.right(f(a))
   )
 
 const increment4 = mapEither(increment)

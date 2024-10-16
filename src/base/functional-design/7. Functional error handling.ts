@@ -3,7 +3,7 @@ export {}
 
 type Option<A> =
   | { type: 'None' } // represents a failure
-  | { type: 'Some'; value: A } // represents a success
+  | { type: 'Some', value: A } // represents a success
 
 // a nullary constructor can be implemented as a constant
 const none: Option<never> = { type: 'None' }
@@ -29,23 +29,24 @@ const _head = <A>(as: Array<A>): A => {
 let _s: string
 try {
   _s = String(_head([]))
-} catch (e) {
+}
+catch (e) {
   _s = (e as any).message
 }
 
-//...where the type system is unaware of possible failures, to...
+// ...where the type system is unaware of possible failures, to...
 //                              ↓ the type system "knows" that this computation may fail
 const head = <A>(as: Array<A>): Option<A> => (as.length === 0 ? none : some(as[0]))
 
 const s = fold(
   head([]),
   () => 'Empty array',
-  (a) => String(a)
+  a => String(a)
 )
 
 // ----------------------------------------------------------
 
-//! The Either type
+// ! The Either type
 /**
  * A common use of Either is as an alternative to Option for dealing with possible missing values.
  * In this usage, None is replaced with a Left which can contain useful information.
@@ -54,8 +55,8 @@ const s = fold(
  */
 
 type Either<L, A> =
-  | { type: 'Left'; left: L } // represents a failure
-  | { type: 'Right'; right: A } // represents a success
+  | { type: 'Left', left: L } // represents a failure
+  | { type: 'Right', right: A } // represents a success
 
 const left = <L, A>(left: L): Either<L, A> => ({ type: 'Left', left })
 
@@ -72,9 +73,11 @@ readFile('./myfile', (err, data) => {
   let message: string
   if (err !== undefined) {
     message = `Error: ${err.message}`
-  } else if (data !== undefined) {
+  }
+  else if (data !== undefined) {
     message = `Data: ${data.trim()}`
-  } else {
+  }
+  else {
     // should never happen
     message = 'The impossible happened'
   }
@@ -88,8 +91,8 @@ declare function _readFile(path: string, callback: (result: Either<Error, string
 _readFile('./myfile', (e) => {
   const message = _fold(
     e,
-    (err) => `Error: ${err.message}`,
-    (data) => `Data: ${data.trim()}`
+    err => `Error: ${err.message}`,
+    data => `Data: ${data.trim()}`
   )
   console.log(message)
 })

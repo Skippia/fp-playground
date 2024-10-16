@@ -1,11 +1,11 @@
-import * as O from 'fp-ts/Option'
 import { pipe } from 'fp-ts/lib/function'
+import * as O from 'fp-ts/Option'
 
 /**
  * ! The problem
  */
 
-interface Person {
+type Person = {
   name: NonEmptyString
   age: Int
 }
@@ -24,11 +24,13 @@ function person(name: NonEmptyString, age: Int): Person {
  * ? make: (t: T) => O<R>
  */
 
-export interface IntBrand {
-  readonly Int: unique symbol // for any type R we shoud define unique symbol in order to garantee uniqueness
+export type IntBrand = {
+  // for any type R we should define unique symbol in order to guarantee uniqueness
+  readonly Int: unique symbol
 }
-export interface NonEmptyStringBrand {
-  readonly NonEmptyString: unique symbol // ensures uniqueness across modules / packages
+export type NonEmptyStringBrand = {
+  // ensures uniqueness across modules / packages
+  readonly NonEmptyString: unique symbol
 }
 
 export type Int = number & IntBrand
@@ -45,15 +47,18 @@ function isNonEmptyString(s: string): s is NonEmptyString {
 export const makeInt: (n: number) => O.Option<Int> = O.fromPredicate(isInt)
 export const makeNonEmptyString = O.fromPredicate(isNonEmptyString)
 
-makeInt(10) // ?
-makeInt(-5) // ?
+makeInt(10) // Some(10)
+makeInt(-5) // None
 
-makeNonEmptyString('') // ?
-makeNonEmptyString('name') //?
+makeNonEmptyString('') // None
+makeNonEmptyString('name') // Some(name)
 
-//---------------------------
+// ---------------------------
 
+// @ts-expect-error ...
 person('', -1.2) // static error
+// @ts-expect-error ...
+person('xxx', -1.2) // static error
 
 const goodName = makeNonEmptyString('Giulio')
 const badName = makeNonEmptyString('')
@@ -66,10 +71,10 @@ const badAge = makeInt(-1.2)
 function checkPerson(name: O.Option<NonEmptyString>, age: O.Option<Int>): O.Option<Person> {
   return pipe(
     name,
-    O.flatMap((name) =>
+    O.flatMap(name =>
       pipe(
         age,
-        O.map((age) => person(name, age))
+        O.map(age => person(name, age))
       )
     )
   )

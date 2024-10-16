@@ -1,4 +1,5 @@
-import { Eq, fromEquals } from 'fp-ts/Eq'
+import type { Eq } from 'fp-ts/Eq'
+import { fromEquals } from 'fp-ts/Eq'
 
 /**
  * ? The getEq combinator: given an instance of Eq for A,
@@ -11,49 +12,58 @@ export function getEq<A>(E: Eq<A>): Eq<ReadonlyArray<A>> {
   // return {
   //   equals: (xs, ys) => xs.every((x, i) => E.equals(x, ys[i])),
   // }
-  return fromEquals((xs, ys) => xs.every((x, i) => E.equals(x, ys[i])))
+  return fromEquals((xs, ys) => xs.every((x, i) => E.equals(x, ys[i] as A)))
 }
 
 export const eqNumber: Eq<number> = {
-  equals: (x, y) => x === y,
+  equals: (x, y) => x === y
 }
 
 // derived (the same)
 export const eqNumbers: Eq<ReadonlyArray<number>> = getEq(eqNumber)
 export const eqNumbers2: Eq<ReadonlyArray<number>> = {
-  equals: (xs, ys) => xs.every((x, i) => eqNumber.equals(x, ys[i])),
+  equals: (xs, ys) => xs.every((x, i) => eqNumber.equals(x, ys[i]!))
 }
 
+type ROArr<A> = ReadonlyArray<A>
+type ROArr2<A> = ReadonlyArray<ROArr<A>>
+
 // derived derived(the same)
-export const eqNumbersNumbers: Eq<ReadonlyArray<ReadonlyArray<number>>> = getEq(eqNumbers)
-export const eqNumbersNumbers2: Eq<ReadonlyArray<ReadonlyArray<number>>> = {
+// export const eqNumbersNumbers: Eq<ROArr2<number>> = getEq(eqNumbers)
+export const eqNumbersNumbers: Eq<ROArr2<number>> = getEq(getEq({
+  equals: (x, y) => x === y
+}))
+
+export const eqNumbersNumbers2: Eq<ROArr2<number>> = {
   equals: (xs, ys) =>
-    xs.every((x, i) => (xs, ys) => xs.every((x, i) => eqNumber.equals(x, ys[i])).equals(x, ys[i])),
+    xs.every((x, i) => x.every((x2, i2) => eqNumber.equals(x2, ys[i]![i2]!)))
 }
-// ...etc
 
 eqNumbers.equals([1, 2, 3], [1, 2, 4]) // ?
 
 eqNumbers.equals([1, 2, 3], [1, 2, 3]) // ?
 eqNumbers2.equals([1, 2, 3], [1, 2, 3]) // ?
 
-eqNumbersNumbers.equals(
+const a = eqNumbersNumbers.equals(
   [
     [1, 2],
-    [3, 4],
+    [3, 4]
   ],
   [
     [1, 2],
-    [3, 4],
+    [3, 4]
   ]
 ) // ?
-eqNumbersNumbers2.equals(
+const b = eqNumbersNumbers2.equals(
   [
     [1, 2],
-    [3, 4],
+    [3, 4]
   ],
   [
     [1, 2],
-    [3, 4],
+    [3, 4]
   ]
 ) // ?
+
+console.log(a)
+console.log(b)

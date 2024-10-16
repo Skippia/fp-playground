@@ -1,8 +1,7 @@
-import * as TE from 'fp-ts/TaskEither'
+import axios from 'axios'
 import * as E from 'fp-ts/Either'
 import { pipe } from 'fp-ts/function'
-
-import axios from 'axios'
+import * as TE from 'fp-ts/TaskEither'
 /**
  * ! TaskEither - basic introduction
  */
@@ -24,12 +23,12 @@ const checkAgeAsync = (age: number) => {
 }
 
 checkAgeAsync(20)
-  .then((msg) => console.log(msg))
-  .catch((error) => console.log(error))
+  .then(msg => console.log(msg))
+  .catch(error => console.log(error))
 
 checkAgeAsync(12)
-  .then((msg) => console.log(msg))
-  .catch((error) => console.log(error))
+  .then(msg => console.log(msg))
+  .catch(error => console.log(error))
 
 // async/await style with try catch
 const _main = async () => {
@@ -38,7 +37,8 @@ const _main = async () => {
     const allowedAge = await checkAgeAsync(20)
     // Return "Not allowed"
     const underAge = await checkAgeAsync(12)
-  } catch (error) {
+  }
+  catch (error) {
     console.log({ error })
   }
 }
@@ -62,10 +62,11 @@ const mainWithTaskEither = async () => {
         (error) => {
           throw error
         },
-        (msg) => console.log({ msg })
+        msg => console.log({ msg })
       )
     )
-  } catch (error) {
+  }
+  catch (error) {
     console.log({ error })
   }
 }
@@ -80,7 +81,8 @@ const fetchAPI = async (url: string) => {
   try {
     const response = await axios.get(url)
     return response
-  } catch (error) {
+  }
+  catch (error) {
     throw new Error(String(error))
   }
 }
@@ -98,14 +100,15 @@ const fetchDB = (dbClient: DbClientMock) => async (id: number) => {
   try {
     const response = await dbClient.findById(id)
     return response
-  } catch (error) {
+  }
+  catch (error) {
     throw new Error(String(error))
   }
 }
 
 // Mock db client
 const dbClientMock = {
-  findById: (id: number) => Promise.resolve({ id, name: 'demoObjName' }),
+  findById: (id: number) => Promise.resolve({ id, name: 'demoObjName' })
 }
 
 const main = async () => {
@@ -116,7 +119,8 @@ const main = async () => {
 
     const dbResult = await fetchDB(dbClientMock)(id)
     console.log(dbResult)
-  } catch (error) {
+  }
+  catch (error) {
     console.error(error)
   }
 }
@@ -126,13 +130,13 @@ main()
 
 const fetchAPIUsingTaskEither = TE.tryCatchK(
   (url: string) => axios.get(url),
-  (reason) => new Error(String(reason))
+  reason => new Error(String(reason))
 )
 
 const fetchDbUsingTaskEither = (dbClient: DbClientMock) =>
   TE.tryCatchK(
     (id: Parameters<DbClientMock['findById']>[0]) => dbClient.findById(id),
-    (reason) => new Error(String(reason))
+    reason => new Error(String(reason))
   )
 
 const mainWithTaskEither2 = async () => {
@@ -142,7 +146,7 @@ const mainWithTaskEither2 = async () => {
     const resultInTaskEither = pipe(
       apiUrl,
       fetchAPIUsingTaskEither,
-      TE.flatMap((apiResult) => fetchDbUsingTaskEither(dbClientMock)(apiResult.data.id))
+      TE.flatMap(apiResult => fetchDbUsingTaskEither(dbClientMock)(apiResult.data.id))
     )
 
     const resultInEither = await resultInTaskEither()
@@ -153,10 +157,11 @@ const mainWithTaskEither2 = async () => {
         (error) => {
           throw error
         },
-        (result) => console.log(result)
+        result => console.log(result)
       )
     )
-  } catch (error) {
+  }
+  catch (error) {
     console.error(error)
   }
 }
@@ -170,5 +175,5 @@ mainWithTaskEither2()
 
 const fetchUsingTryCatch = TE.tryCatch(
   () => axios.get('https://example.com'),
-  (reason) => new Error(String(reason))
+  reason => new Error(String(reason))
 )

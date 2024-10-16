@@ -1,14 +1,13 @@
 import * as E from 'fp-ts/Either'
-import * as O from 'fp-ts/Option'
-import * as A from 'fp-ts/Array'
 import { pipe } from 'fp-ts/lib/function'
+import type * as O from 'fp-ts/Option'
 
 function example1(obj: Record<string, number>): E.Either<string, number> {
   /**
    * They are equal
    */
   // const either = obj?.param === undefined ? E.left('bad') : E.right(obj.param)
-  const either = pipe(obj?.param, E.fromNullable('bad'))
+  const either = pipe(obj.param, E.fromNullable('bad'))
 
   return either
 }
@@ -31,9 +30,9 @@ function example2(opt: O.Option<number>): E.Either<string, number> {
   return either
 }
 
-//---------------------------------------------
+// ---------------------------------------------
 
-interface User {
+type User = {
   verified: boolean
 }
 
@@ -45,7 +44,7 @@ function example3(user: User): E.Either<string, User> {
   const either = pipe(
     user,
     E.fromPredicate(
-      (user) => user.verified,
+      user => user.verified,
       () => 'bad'
     )
   )

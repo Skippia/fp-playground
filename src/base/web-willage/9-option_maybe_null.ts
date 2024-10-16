@@ -9,8 +9,8 @@
  * type None = typeof none // * Nothing
  */
 
+import { flow } from 'fp-ts/lib/function'
 import * as O from 'fp-ts/Option'
-import { flow, pipe } from 'fp-ts/lib/function'
 
 /**
  * ! Implementation in fp-ts
@@ -18,12 +18,12 @@ import { flow, pipe } from 'fp-ts/lib/function'
 
 type Option<A> = Some<A> | None
 
-interface Some<A> {
+type Some<A> = {
   readonly _tag: 'Some'
   readonly value: A
 }
 
-interface None {
+type None = {
   readonly _tag: 'None'
 }
 
@@ -52,8 +52,7 @@ function divide2Save(x: number): Option<number> {
 }
 
 const chopBumpV2 = flow(divide2Save, (x: O.Option<number>) =>
-  O.isNone(x) ? none : O.some(increment(x.value))
-) // it's wrong because divide2 is partial function
+  O.isNone(x) ? none : O.some(increment(x.value))) // it's wrong because divide2 is partial function
 
 chopBumpV2(0) // ?
 chopBumpV2(8) // ?

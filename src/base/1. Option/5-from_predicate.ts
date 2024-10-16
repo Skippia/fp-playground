@@ -1,10 +1,10 @@
-import * as O from 'fp-ts/Option'
 import { pipe } from 'fp-ts/lib/function'
+import * as O from 'fp-ts/Option'
 
 /**
  * ? Predicate is a function that returns true or false:
  * O.fromPredicate(predicate) - returns Option
- * O.fromPredicate(refinement) - refinemnet is predicate that refines a type
+ * O.fromPredicate(refinement) - refinement is predicate that refines a type
  */
 
 /**
@@ -37,7 +37,7 @@ getDiscountText({ percentage: 20, expired: true }) // ?
 
 /**
  * !Predicate refinement example:
- * * that's mean instead of A type we can return `B extends A type` (more narrow type)
+ * that's mean instead of A type we can return `B extends A type` (more narrow type)
  */
 
 type Dog = {
@@ -52,12 +52,12 @@ type Cat = {
 
 const cat: Cat = {
   lives: 9,
-  name: 'spike',
+  name: 'spike'
 }
 
 const dog: Dog = {
   isBig: true,
-  name: 'spot',
+  name: 'spot'
 }
 
 type Animal = Dog | Cat
