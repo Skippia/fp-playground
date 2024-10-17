@@ -1,3 +1,4 @@
+/* eslint-disable style/no-tabs */
 /**
  * In the last post about categories I presented the TS category (the TypeScript category) and the central problem with function composition
  * How can we compose two generic functions f: (a: A) => B and g: (c: C) => D?
@@ -41,7 +42,7 @@
 /**
  * ? In which the constraint B = F<C> leads to functors
  * Let's consider the following constraint: B = F<C> for some type constructor F, or in other words (and after some renaming)
- * f: (a: A) => F<B> is an effectful program
+ * f: (a: A) => F<B> is an effectfull program
  * g: (b: B) => C is a pure program
  * ? In order to compose f with g we could find a way to lift g from a function (b: B) => C to a function (fb: F<B>) => F<C>
  * ? so that we can use the usual function composition

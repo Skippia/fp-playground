@@ -1,3 +1,4 @@
+/* eslint-disable import/no-named-as-default-member */
 import base64 from 'base-64'
 import * as E from 'fp-ts/Either'
 import * as J from 'fp-ts/Json'

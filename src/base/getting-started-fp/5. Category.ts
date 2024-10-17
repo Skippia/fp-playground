@@ -36,7 +36,7 @@
  * `morphisms` are functions
  * `∘` is the usual function composition
  * --- based on the diagram (check url) above ---
- * can be interpreted as a fairly simple, immaginary programming language with only three types and a small bunch of functions.
+ * can be interpreted as a fairly simple, imaginary programming language with only three types and a small bunch of functions.
  * A = string
  * B = number
  * C = boolean
@@ -45,17 +45,17 @@
  * g ∘ f = string => boolean
  * The implementation could be something like:
  */
-function f(s: string): number {
+function x(s: string): number {
   return s.length
 }
 
-function g(n: number): boolean {
+function y(n: number): boolean {
   return n > 2
 }
 
 // h = g ∘ f
 function h(s: string): boolean {
-  return g(f(s))
+  return y(x(s))
 }
 
 /**
@@ -83,3 +83,5 @@ function compose<A, B, D>(g: (b: B) => D, f: (a: A) => B): (a: A) => D {
 /**
  * ! But what if B != C? How can we compose such functions? Should we just give up?
  */
+
+export {}

@@ -86,6 +86,7 @@ incrementLength('abcd') // ?
 
 const function1 = flow(mapOption(strLength), mapOption(increment))
 const function2 = mapOption(flow(strLength, increment))
+const function3 = O.map(flow(strLength, increment))
 
 function1(O.some('abcd')) // ?
 function2(O.some('abcd')) // ?

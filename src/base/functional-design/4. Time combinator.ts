@@ -13,7 +13,7 @@ export function time<A>(ma: IO<A>): IO<[A, number]> {
 
 export function withLogging<A>(ma: IO<A>): IO<A> {
   return io.chain(time(ma), ([a, millis]) =>
-    io.map(log(`Result: ${a}, Elapsed: ${millis}`), () => a))
+    io.map(log(`Result: ${String(a)}, Elapsed: ${millis}`), () => a))
 }
 
 export const program = withLogging(io.map(() => 35, fib))

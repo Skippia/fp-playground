@@ -8,7 +8,7 @@
  * transform it into the "Container" world, then you have a Functor! (Well, you still need to fulfil the Functor laws :) )
  */
 
-import type { Option, URI } from 'fp-ts/lib/Option'
+import * as O from 'fp-ts/lib/Option'
 import type { Pointed1 } from 'fp-ts/lib/Pointed'
 
 /**
@@ -41,18 +41,19 @@ import type { Pointed1 } from 'fp-ts/lib/Pointed'
 /**
  * Type in Option.d.ts
  */
-declare const map: <A, B>(f: (a: A) => B) => (fa: Option<A>) => Option<B>
-declare const of: Pointed1<URI>['of']
+type TMap = <A, B>(f: (a: A) => B) => (fa: O.Option<A>) => O.Option<B>
+declare const of: Pointed1<O.URI>['of']
 
 /**
  * Implementation in Option.js
  */
-const map = function (f) {
-  return function (fa) {
-    return (0, exports.isNone)(fa) ? exports.none : (0, exports.some)(f(fa.value))
-  }
-}
-exports.of = exports.some
+
+const map: TMap = f => fa => (O.isNone(fa) ? O.none : O.some(f(fa.value)))
+
+const double = (n: number): number => n * 2
+
+const result1 = map(double)(O.some(5)) // Some(10)
+const result2 = map(double)(O.none) // None
 
 /**
  * In the implementation of "map" function in Option, it checks whether the Option value is None or Some(a).

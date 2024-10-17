@@ -161,10 +161,17 @@ export default antfu(
       // 'ts/no-empty-function': 'error',
       'ts/no-invalid-this': 'error',
       'ts/no-loop-func': 'error',
-      'ts/no-loss-of-precision': 'error',
+      // 'ts/no-loss-of-precision': 'error',
       'ts/no-redeclare': 'error',
       // 'ts/no-throw-literal': ['error', { allowThrowingAny: false, allowThrowingUnknown: false }],
-      'ts/no-shadow': 'error',
+      'ts/no-shadow': [
+        'error',
+        {
+          allow: ['E', 'L', 'R', 'A', 'O', 'M', 'S'],
+          ignoreTypeValueShadow: true,
+          ignoreFunctionTypeParameterNameValueShadow: true
+        }
+      ],
       'ts/no-unused-expressions': 'error',
       // 'ts/no-useless-constructor': 'error',
       'ts/require-await': 'error',
@@ -194,7 +201,7 @@ export default antfu(
           ignoreRestArgs: true
         }
       ],
-      'ts/no-non-null-assertion': 'off', // !!!
+      'ts/no-non-null-assertion': 'off' // !!!
     }
   },
   // ?----------------------------------------------------
@@ -208,22 +215,24 @@ export default antfu(
 
     rules: {
       // Disable conflicting ESLint rules and enable TS-compatible ones
-      'default-param-last': 'off',
-      'dot-notation': 'off',
-      'lines-between-class-members': 'off',
-      'no-array-constructor': 'off',
-      'no-dupe-class-members': 'off',
+
+      // 'default-param-last': 'off',
+      // 'dot-notation': 'off',
+      // 'lines-between-class-members': 'off',
+      // 'no-array-constructor': 'off',
+      // 'no-dupe-class-members': 'off',
       // 'no-empty-function': 'off',
-      'no-invalid-this': 'off',
-      'no-loop-func': 'off',
-      'no-loss-of-precision': 'off',
-      'no-redeclare': 'off',
+      // 'no-invalid-this': 'off',
+      // 'no-loop-func': 'off',
+      // 'no-loss-of-precision': 'off',
+      // 'no-redeclare': 'off',
+      // 'require-await': 'off',
+      // 'no-unused-expressions': 'off',
+
       'no-throw-literal': 'off',
       'no-shadow': 'off',
-      'no-unused-expressions': 'off',
       'no-unused-vars': 'off',
       'no-useless-constructor': 'off',
-      'require-await': 'off',
 
       'style/comma-dangle': [
         'error',
@@ -240,7 +249,6 @@ export default antfu(
       'no-console': 'off',
 
       'unicorn/no-new-array': 'off',
-      'no-unused-vars': 'off',
       'unused-imports/no-unused-vars': 'off',
       'antfu/if-newline': 'off',
       'antfu/top-level-function': 'off',
@@ -491,7 +499,6 @@ export default antfu(
       'no-return-await': 'off',
       'no-script-url': 'error',
       'no-sequences': 'error',
-      // 'no-shadow': 'error',
       'no-shadow-restricted-names': 'error',
       'no-ternary': 'off',
       // 'no-throw-literal': 'error',
@@ -547,7 +554,6 @@ export default antfu(
       'lines-around-comment': 'off',
       'lines-between-class-members': ['error', 'always', { exceptAfterSingleLine: true }],
       'max-statements-per-line': 'off',
-      'no-tabs': 'error',
       'padding-line-between-statements': 'off',
       'quotes': ['error', 'single', { avoidEscape: true }]
     }

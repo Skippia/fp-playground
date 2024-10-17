@@ -71,19 +71,23 @@ const badAge = makeInt(-1.2)
 function checkPerson(name: O.Option<NonEmptyString>, age: O.Option<Int>): O.Option<Person> {
   return pipe(
     name,
-    O.flatMap(name =>
+    O.flatMap(name2 =>
       pipe(
         age,
-        O.map(age => person(name, age))
+        O.map(age2 => person(name2, age2))
       )
     )
   )
 }
-function _checkPerson(name: O.Option<NonEmptyString>, age: O.Option<Int>): O.Option<Person> {
+
+function _checkPerson(
+  initialName: O.Option<NonEmptyString>,
+  initialAge: O.Option<Int>
+): O.Option<Person> {
   return pipe(
     O.Do,
-    O.bind('name', () => name),
-    O.bind('age', () => age),
+    O.bind('name', () => initialName),
+    O.bind('age', () => initialAge),
     O.map(({ name, age }) => person(name, age))
   )
 }

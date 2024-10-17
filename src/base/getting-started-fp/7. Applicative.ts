@@ -1,3 +1,6 @@
+/* eslint-disable ts/no-redundant-type-constituents */
+/* eslint-disable ts/no-unsafe-call */
+/* eslint-disable style/no-tabs */
 import type * as Apply from 'fp-ts/Apply'
 import type { HKT } from 'fp-ts/HKT'
 import * as O from 'fp-ts/Option'
@@ -157,5 +160,5 @@ function liftA3<F>(
  */
 /**
  * Is the general problem solved?
- * Not yet. There's still an important case which is missing: what if both programs are effectful?
+ * Not yet. There's still an important case which is missing: what if both programs are effectfull?
  */

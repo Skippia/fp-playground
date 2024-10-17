@@ -16,3 +16,5 @@ const curry2: Curry2 = f => a => b => f(a, b)
 const sum2 = curry2(normalSum)
 
 const x = sum2(1)(2)
+
+export {}

@@ -64,17 +64,17 @@ const monadicWay = async () => {
     console.error(error)
   }
 }
-monadicWay()
+void monadicWay()
 
 /**
  * By default, TaskEither.traverseArray use the Monadic style to traverse the array,
  * meaning that it returns the first error sequentially (instead of simultaneous?). Be aware that this
- * behaviour is different from Promise.all, which returns the first Promise that is rejected first.
+ * behavior is different from Promise.all, which returns the first Promise that is rejected first.
  * If you increase the fourth timer to for example 4000, which becomes longer than the last timer,
  * you will get the Promise with timer 3000 (The fifth timer) if you use Promise.all .
  * If you use TaskEither.traverseArray , you will get the Promise with time 4000 instead.
  *
- * ! I would recommend the following way to mimic the behaviour of Promise.all with TaskEither:
+ * ! I would recommend the following way to mimic the behavior of Promise.all with TaskEither:
  */
 
 const monadicWayImproved = async () => {
@@ -93,7 +93,7 @@ const monadicWayImproved = async () => {
             setTimeout(() => resolve(`Promise with timer ${timer} resolved`), timer)
           })
           : new Promise<string>((_, reject) => {
-            setTimeout(() => reject(`Promise with timer ${timer} rejected`), timer)
+            setTimeout(() => reject(new Error(`Promise with timer ${timer} rejected`)), timer)
           })
       ),
       promiseAllWithTaskEither
@@ -105,7 +105,7 @@ const monadicWayImproved = async () => {
     console.error(error)
   }
 }
-monadicWayImproved()
+void monadicWayImproved()
 
 // ===============================================================================================
 /**
@@ -146,7 +146,7 @@ const applicativeWay = async () => {
     console.error(error)
   }
 }
-applicativeWay()
+void applicativeWay()
 
 // Promise.race example
 
@@ -163,7 +163,7 @@ const promiseRace = async () => {
 
   const resultRaceMonoid = await getResultRaceMonoid()
 }
-promiseRace()
+void promiseRace()
 
 /**
  * For Promise.any , I would recommend using the way same as Promise.all to wrap it inside taskEither.tryCatchK.

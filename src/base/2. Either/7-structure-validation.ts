@@ -29,7 +29,7 @@ const validateUserOneWay = (user: User): string | User =>
     E.flatMap(validateUserHas2FA), // return either left or right
     E.matchW(
       err => err,
-      user => user
+      user2 => user2
     )
   )
 

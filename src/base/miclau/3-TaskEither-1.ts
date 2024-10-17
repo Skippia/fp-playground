@@ -70,7 +70,8 @@ const mainWithTaskEither = async () => {
     console.log({ error })
   }
 }
-mainWithTaskEither()
+
+void mainWithTaskEither()
 
 // ==================================================
 
@@ -124,7 +125,7 @@ const main = async () => {
     console.error(error)
   }
 }
-main()
+void main()
 
 // TaskEither version:
 
@@ -165,7 +166,7 @@ const mainWithTaskEither2 = async () => {
     console.error(error)
   }
 }
-mainWithTaskEither2()
+void mainWithTaskEither2()
 
 // ==================================
 /**

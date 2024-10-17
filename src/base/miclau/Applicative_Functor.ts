@@ -1,4 +1,6 @@
-import type { Option } from 'fp-ts/lib/Option'
+/* eslint-disable ts/no-shadow */
+import { pipe } from 'fp-ts/lib/function'
+import * as O from 'fp-ts/lib/Option'
 /**
  * When you provide a apply function that takes a function which is wrapped with a "Container"
  * and transform it into a corresponding function in the "Container" world, it becomes "Applicative".
@@ -31,21 +33,59 @@ import type { Option } from 'fp-ts/lib/Option'
 /**
  * @since 2.0.0
  */
-declare const ap: <A>(fa: Option<A>) => <B>(fab: Option<(a: A) => B>) => Option<B>
+type TAp = <A>(fa: O.Option<A>) => <B>(fab: O.Option<(a: A) => B>) => O.Option<B>
 
 /**
  * Implementation in Option.js
  */
-const ap = function (fa) {
-  return function (fab) {
-    return (0, exports.isNone)(fab)
-      ? exports.none
-      : (0, exports.isNone)(fa)
-          ? exports.none
-          : (0, exports.some)(fab.value(fa.value))
-  }
+// const ap: TAp = fa => fab =>
+//   pipe(fab, O.fold(
+//     () => O.none,
+//     f =>
+//       pipe(fa, O.fold(
+//         () => O.none,
+//         a => O.some(f(a))
+//       ))
+//   ))
+
+// const ap: TAp = O.chain(f => O.map(f)(fa))(fab)
+// const ap: TAp = fa => fab =>
+//   pipe(fab, O.chain(
+//     f => pipe(fa, O.chain(
+//       a => O.some(f(a))
+//     ))
+//   ))
+
+function flatten<A>(mma: O.Option<O.Option<A>>): O.Option<A> {
+  if (O.isNone(mma)) return O.none
+  return mma.value
 }
 
+const ap
+  = <A, B>(fa: O.Option<A>) =>
+    (fab: O.Option<(a: A) => B>): O.Option<B> =>
+      pipe(
+        fab,
+        O.map(fab => O.map(fab)(fa)),
+        O.flatten
+      )
+
+const value1: O.Option<number> = O.some(5)
+const func1: O.Option<(a: number) => string> = O.some(n => `Number is ${n}`)
+
+const value2: O.Option<number> = O.some(5)
+const func2: O.Option<(a: number) => string> = O.none
+
+const value3: O.Option<number> = O.none
+const func3: O.Option<(a: number) => string> = O.some(n => `Number is ${n}`)
+
+const result1 = ap(value1)(func1) // Some('Number is 5')
+const result2 = ap(value2)(func2) // Some('Number is 5')
+const result3 = ap(value3)(func3) // Some('Number is 5')
+
+console.log(result1)
+console.log(result2)
+console.log(result3)
 /**
  * In the implementation of apply function in Option, it checks whether the Option function value fab and
  * the Option data value fa is None or Some(a). If either of them is None,

@@ -1,3 +1,4 @@
+/* eslint-disable ts/no-unsafe-call */
 export {}
 
 /**
@@ -214,11 +215,11 @@ type CallbackArgs = [Error | undefined, string | undefined]
 // however, its components are dependent: you get either an error or a string
 
 /**
- * err	      data	      legal?
- * Error	    undefined	    ✓
- * undefined	string	      ✓
- * Error	    string	      ✘
- * undefined	undefined	    ✘
+ * err        data        legal?
+ * Error      undefined     ✓
+ * undefined  string        ✓
+ * Error      string        ✘
+ * undefined  undefined     ✘
  */
 
 // A sum type would be a better choice, but which one?
@@ -234,7 +235,7 @@ type CallbackArgs = [Error | undefined, string | undefined]
  */
 type CallbackResult = { error: Error, data: undefined } | { error: undefined, data: string }
 
-declare function readFile(path: string, callback: (result: CallbackResult) => void): void
+declare function _readFile(path: string, callback: (result: CallbackResult) => void): void
 
 // ! Conclusion
 /**
