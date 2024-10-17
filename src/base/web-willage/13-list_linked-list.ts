@@ -25,7 +25,7 @@ const myListEmpty: List<never> = nil
 
 type ShowList = <A>(xs: List<A>) => string
 const showList: ShowList = xs =>
-  isNil(xs) ? '' : `${xs.head}` + (isNil(xs.tail) ? '' : ` ${showList(xs.tail)}`)
+  isNil(xs) ? '' : `${String(xs.head)}` + (isNil(xs.tail) ? '' : ` ${showList(xs.tail)}`)
 
 showList(myList)
 

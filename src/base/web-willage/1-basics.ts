@@ -9,3 +9,5 @@
  *
  * ? Bad design produces unexpected consequences whereas good designs produces unexpected benefits
  */
+
+export {}

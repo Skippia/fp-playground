@@ -31,3 +31,4 @@
  *  - Composition identity:
  *    - const id = x => x; => round = id ∘ round; isEven = id ∘ isEven
  */
+export {}

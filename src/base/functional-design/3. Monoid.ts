@@ -1,4 +1,3 @@
-/* eslint-disable ts/no-shadow */
 /* eslint-disable import/namespace */
 import { pipe } from 'fp-ts/function'
 import * as N from 'fp-ts/lib/number'

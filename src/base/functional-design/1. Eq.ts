@@ -30,13 +30,14 @@ type ROArr2<A> = ReadonlyArray<ROArr<A>>
 
 // derived derived(the same)
 // export const eqNumbersNumbers: Eq<ROArr2<number>> = getEq(eqNumbers)
-export const eqNumbersNumbers: Eq<ROArr2<number>> = getEq(getEq({
-  equals: (x, y) => x === y
-}))
+export const eqNumbersNumbers: Eq<ROArr2<number>> = getEq(
+  getEq({
+    equals: (x, y) => x === y
+  })
+)
 
 export const eqNumbersNumbers2: Eq<ROArr2<number>> = {
-  equals: (xs, ys) =>
-    xs.every((x, i) => x.every((x2, i2) => eqNumber.equals(x2, ys[i]![i2]!)))
+  equals: (xs, ys) => xs.every((x, i) => x.every((x2, i2) => eqNumber.equals(x2, ys[i]![i2]!)))
 }
 
 eqNumbers.equals([1, 2, 3], [1, 2, 4]) // ?

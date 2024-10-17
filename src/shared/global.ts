@@ -1,6 +1,5 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable import/newline-after-import */
 import { MeasurePerformance } from '.'
 
-;
-
-(global as any).MeasurePerformance = MeasurePerformance
+/* eslint-disable ts/no-explicit-any */
+;(global as any).MeasurePerformance = MeasurePerformance

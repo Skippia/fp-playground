@@ -33,7 +33,7 @@ function lift<E, A>(check: (a: A) => E.Either<E, A>): (a: A) => E.Either<NonEmpt
   return a =>
     pipe(
       check(a),
-      E.mapLeft(a => [a])
+      E.mapLeft(x => [x])
     )
 }
 
@@ -69,7 +69,7 @@ const validateName = (s: string): E.Either<NonEmptyArray<string>, string> =>
   s.length === 0 ? E.left(['Invalid name']) : E.right(s)
 
 const validateAge = (s: string): E.Either<NonEmptyArray<string>, number> =>
-  isNaN(+s) ? E.left(['Invalid age']) : E.right(+s)
+  Number.isNaN(Number(s)) ? E.left(['Invalid age']) : E.right(Number(s))
 
 function validatePerson(name: string, age: string): E.Either<NonEmptyArray<string>, Person> {
   return pipe(

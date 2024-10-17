@@ -5,3 +5,5 @@
  * - Each transformation or function call creates a new value
  * - Pure function + Immutable data => Referential transparency (we can replace a function call with its definition(result))
  */
+
+export {}

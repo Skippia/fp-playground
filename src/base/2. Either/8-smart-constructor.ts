@@ -44,7 +44,7 @@ function example3(user: User): E.Either<string, User> {
   const either = pipe(
     user,
     E.fromPredicate(
-      user => user.verified,
+      user2 => user2.verified,
       () => 'bad'
     )
   )

@@ -23,11 +23,11 @@ const followersOfFollowers: Array<User> = A.flatten(getFollowers(user).map(getFo
 // ? Example (M = Option)
 const inverse = (n: number): O.Option<number> => (n === 0 ? O.none : O.some(1 / n))
 
-const _inverseHead: O.Option<O.Option<number>> = O.option.map(A.head([1, 2, 3]), inverse)
+const _inverseHead: O.Option<O.Option<number>> = O.Functor.map(A.head([1, 2, 3]), inverse)
 
 const flatten = <A>(mma: O.Option<O.Option<A>>): O.Option<A> => (O.isNone(mma) ? O.none : mma.value)
 
-const inverseHead: O.Option<number> = flatten(O.option.map(A.head([1, 2, 3]), inverse))
+const inverseHead: O.Option<number> = flatten(O.Functor.map(A.head([1, 2, 3]), inverse))
 
 /**
  * All those flatten functions... It's not a coincidence, there's a functional pattern under the hood.
@@ -56,7 +56,7 @@ const inverseHead: O.Option<number> = flatten(O.option.map(A.head([1, 2, 3]), in
  * flatMap(f) ∘ of = f (Right identity)
  * flatMap(h) ∘ (flatMap(g) ∘ f) = flatMap((flatMap(h) ∘ g)) ∘ f (Associativity)
  * ---
- * where f, g, h are all effectful functions and ∘ is the usual function composition.
+ * where f, g, h are all effectfull functions and ∘ is the usual function composition.
  */
 
 // ...

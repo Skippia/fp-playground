@@ -39,10 +39,10 @@ function getUserLevel(user: User, userScore: UserScore): string {
   return `Level ${user.username} - ${userScore.score}`
 }
 
-function getLevel(isGetUser: boolean, score: UserScore['score']): string {
+function getLevel(isGetUser: boolean, initialScore: UserScore['score']): string {
   const level = pipe(
     O.Do,
-    O.bind('user', () => getUser(isGetUser, score)), // if returns O.none - we stop pipe
+    O.bind('user', () => getUser(isGetUser, initialScore)), // if returns O.none - we stop pipe
     O.bind('score', ({ user }) => getUserScore(user)), // if returns O.none - we stop pipe
     O.map(({ user, score }) => getUserLevel(user, score)), // if each bind didn't return O.none - run this function and return result
     O.getOrElse(() => 'Level unknown')

@@ -31,7 +31,7 @@ type Magma<M> = { concat: (x: M, y: M) => M }
  * There is one problem, what semigroup returns for method concatAll if our input is []? This problem solves monoid
  */
 
-type Semigroup<S> = {} & Magma<S>
+type Semigroup<X> = {} & Magma<X>
 
 /**
  * Monoid is a Semigroup in which there is Neutral Element (empty)

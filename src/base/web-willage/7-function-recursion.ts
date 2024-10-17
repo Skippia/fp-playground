@@ -12,3 +12,5 @@ type SumAll = (xs: number[]) => number
 const sum2Recursion: SumAll = xs => (xs[0] ? xs[0] + sum2Recursion(xs.slice(1)) : 0)
 
 sumRecursion([1, 2, 3, 4, 5]) // ?
+
+export {}

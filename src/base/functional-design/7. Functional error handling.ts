@@ -1,11 +1,9 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-export {}
-
+/* eslint-disable ts/no-shadow */
 type Option<A> =
   | { type: 'None' } // represents a failure
   | { type: 'Some', value: A } // represents a success
 
-// a nullary constructor can be implemented as a constant
+// a nullish constructor can be implemented as a constant
 const none: Option<never> = { type: 'None' }
 
 const some = <A>(value: A): Option<A> => ({ type: 'Some', value })
@@ -23,7 +21,7 @@ const _head = <A>(as: Array<A>): A => {
   if (as.length === 0) {
     throw new Error('Empty array')
   }
-  return as[0]
+  return as[0]!
 }
 
 let _s: string
@@ -31,12 +29,12 @@ try {
   _s = String(_head([]))
 }
 catch (e) {
-  _s = (e as any).message
+  _s = (e as Error).message
 }
 
 // ...where the type system is unaware of possible failures, to...
 //                              ↓ the type system "knows" that this computation may fail
-const head = <A>(as: Array<A>): Option<A> => (as.length === 0 ? none : some(as[0]))
+const head = <A>(as: Array<A>): Option<A> => (as.length === 0 ? none : some(as[0]!))
 
 const s = fold(
   head([]),
@@ -96,3 +94,5 @@ _readFile('./myfile', (e) => {
   )
   console.log(message)
 })
+
+export {}

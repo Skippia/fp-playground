@@ -1,3 +1,4 @@
+/* eslint-disable ts/no-shadow */
 import * as A from 'fp-ts/Array'
 import * as E from 'fp-ts/Either'
 import { pipe } from 'fp-ts/function'
