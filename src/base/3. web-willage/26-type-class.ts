@@ -1,7 +1,9 @@
-/* eslint-disable style/max-len */
 /**
  * [Definition]:
- * A type class defines a set of functions (methods) that can be implemented by types. They are a way to define behavior that can be shared across different types.
+ * Type class is a pattern which allows to abstract some logic from data structure.
+ * A type class defines a set of functions (methods) that can be implemented by types.
+ * They are a way to define behavior that can be shared across different types.
+  * !!! The crux is that there are some structures (objects) and there is some behavior which is exist out of these structures
  * [Analogy]: Similar to interfaces in object-oriented programming but used to achieve ad-hoc polymorphism.
  * ------------------------------------------------------------------------------------------------
  * [Common Type Classes]
@@ -25,7 +27,7 @@ type Show<A> = {
 
 const numShow: Show<number> = { toString: a => a.toString() }
 const strShow: Show<string> = { toString: a => a }
-const boolSHo: Show<number> = { toString: a => a ? 'Yes' : 'No' }
+const boolSHo: Show<number> = { toString: a => (a ? 'Yes' : 'No') }
 
 // ----------------------------------------------------------------------------
 
@@ -47,3 +49,7 @@ type _Functor2<F extends _URIS2> = {
 }
 
 export type { _Functor, _Functor1, _Functor2 }
+
+///
+
+

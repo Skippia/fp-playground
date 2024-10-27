@@ -1,6 +1,5 @@
 /* eslint-disable style/max-len */
 /* eslint-disable ts/no-explicit-any */
-import * as E from 'fp-ts/Either'
 import type * as O from 'fp-ts/Option'
 
 import type { List } from './13-list_linked-list'

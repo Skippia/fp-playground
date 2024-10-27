@@ -1,8 +1,5 @@
 /* eslint-disable ts/consistent-type-definitions */
-import * as E from 'fp-ts/Either'
-import { flow, pipe } from 'fp-ts/lib/function'
 import { getFunctorComposition } from 'fp-ts/lib/Functor'
-import type { Functor, Functor1, FunctorComposition } from 'fp-ts/lib/Functor'
 import * as O from 'fp-ts/Option'
 
 import { cons, isNil, nil } from './13-list_linked-list'

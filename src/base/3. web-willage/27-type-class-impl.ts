@@ -2,7 +2,7 @@
 /* eslint-disable import/first */
 /* eslint-disable ts/no-redeclare */
 /* eslint-disable no-redeclare */
-/* eslint-disable style/max-len */
+
 // -------------------------------------------------------------------
 
 import * as E from 'fp-ts/Either'
@@ -45,15 +45,23 @@ const y22 = EitherFunctor2.map(E.left(new Error('hello')), incr)
 // type _TLift = <F extends _URIS>(F: _Functor1<F>) => <A, B>(f: (a: A) => B) => (fa: _Kind<F, A>) => _Kind<F, B>
 // const _lift: _TLift = F => f => fa => F.map(fa, f)
 
-function lift<F extends URIS2>(F: Functor2<F>): <E, A, B>(f: (a: A) => B) => (fa: Kind2<F, E, A>) => Kind2<F, E, B>
-function lift<F extends URIS>(F: Functor1<F>): <A, B>(f: (a: A) => B) => (fa: Kind<F, A>) => Kind<F, B>
+function lift<F extends URIS2>(
+  F: Functor2<F>
+): <E, A, B>(f: (a: A) => B) => (fa: Kind2<F, E, A>) => Kind2<F, E, B>
+function lift<F extends URIS>(
+  F: Functor1<F>
+): <A, B>(f: (a: A) => B) => (fa: Kind<F, A>) => Kind<F, B>
 function lift<F>(F: Functor<F>): <A, B>(f: (a: A) => B) => (fa: HKT<F, A>) => HKT<F, B>
 function lift<F>(F: Functor<F>): <A, B>(f: (a: A) => B) => (fa: HKT<F, A>) => HKT<F, B> {
   return f => fa => F.map(fa, f)
 }
 
-function _lift<F extends _URIS2>(F: _Functor2<F>): <E, A, B>(f: (a: A) => B) => (fa: _Kind2<F, E, A>) => _Kind2<F, E, B>
-function _lift<F extends _URIS>(F: _Functor1<F>): <A, B>(f: (a: A) => B) => (fa: _Kind<F, A>) => _Kind<F, B>
+function _lift<F extends _URIS2>(
+  F: _Functor2<F>
+): <E, A, B>(f: (a: A) => B) => (fa: _Kind2<F, E, A>) => _Kind2<F, E, B>
+function _lift<F extends _URIS>(
+  F: _Functor1<F>
+): <A, B>(f: (a: A) => B) => (fa: _Kind<F, A>) => _Kind<F, B>
 function _lift<F>(F: _Functor<F>): <A, B>(f: (a: A) => B) => (fa: _HKT<F, A>) => _HKT<F, B>
 function _lift<F>(F: _Functor<F>): <A, B>(f: (a: A) => B) => (fa: _HKT<F, A>) => _HKT<F, B> {
   return f => fa => F.map(fa, f)

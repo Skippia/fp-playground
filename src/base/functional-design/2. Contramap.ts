@@ -4,8 +4,7 @@
  */
 
 import type { Eq } from 'fp-ts/Eq'
-import { fromEquals } from 'fp-ts/Eq'
-// import { contramap } from 'fp-ts/Eq'
+import { contramap as _contramap, fromEquals } from 'fp-ts/Eq'
 
 type User = {
   id: number
@@ -26,7 +25,11 @@ const numberEq: Eq<number> = {
 const eqUser: Eq<User> = contramap((user: User) => user.id)(numberEq)
 
 function getEq<A>(E: Eq<A>): Eq<ReadonlyArray<A>> {
-  return fromEquals((xs, ys) => xs.every((x, i) => E.equals(x, ys[i]!)))
+  return fromEquals(
+    (xs, ys) =>
+      /* returns boolean */
+      xs.every((x, i) => E.equals(x, ys[i]!))
+  )
 }
 
 /**

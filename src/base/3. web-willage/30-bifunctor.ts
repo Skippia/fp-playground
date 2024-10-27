@@ -18,10 +18,11 @@ type Bifunctor2<F extends URIS2> = {
 
 const EitherFunctor: Bifunctor2<'Either'> = {
   URI: 'Either',
-  bimap: (f, g) => E.match(
-    a => E.left(f(a)),
-    b => E.right(g(b))
-  )
+  bimap: (f, g) =>
+    E.match(
+      a => E.left(f(a)),
+      b => E.right(g(b))
+    )
 }
 
 const isEmail = (email: string) => email.includes('@')
@@ -33,8 +34,11 @@ const val = eitherFunctor(E.left(12))
 const val2 = eitherFunctor(E.right('helloworld'))
 const val3 = eitherFunctor(E.right('hello@world'))
 
-console.dir({
-  val,
-  val2,
-  val3,
-}, { depth: Infinity })
+console.dir(
+  {
+    val,
+    val2,
+    val3
+  },
+  { depth: Infinity }
+)
