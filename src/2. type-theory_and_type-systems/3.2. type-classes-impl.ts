@@ -1,5 +1,3 @@
-/* eslint-disable import/order */
-/* eslint-disable import/first */
 /* eslint-disable ts/no-redeclare */
 /* eslint-disable no-redeclare */
 
@@ -11,8 +9,11 @@ import { pipe } from 'fp-ts/lib/function'
 import type { Functor, Functor1, Functor2 } from 'fp-ts/lib/Functor'
 import * as O from 'fp-ts/Option'
 
-import type { _HKT, _Kind, _Kind2, _URIS, _URIS2 } from './25-kind-higher-kinded-type'
-import type { _Functor, _Functor1, _Functor2 } from './26-type-class'
+import { cons, isNil, nil } from '@shared/linked-list'
+import type { List } from '@shared/linked-list'
+
+import type { _HKT, _Kind, _Kind2, _URIS, _URIS2 } from './2. higher-kinded-types(HKT-s)'
+import type { _Functor, _Functor1, _Functor2 } from './3.1. type-classes'
 
 declare const _OptionFunctor: _Functor<'Option'>
 declare const _OptionFunctor1: _Functor1<'Option'>
@@ -92,9 +93,6 @@ const ____z1 = ____liftedIncr(E.right(5))
 const ____z2 = ____liftedIncr(E.left(new Error('some error')))
 
 // --------------------------------------------------------------
-
-import { cons, isNil, nil } from './13-list_linked-list'
-import type { List } from './13-list_linked-list'
 
 const mapList = <A, B>(fa: List<A>, f: (a: A) => B): List<B> =>
   isNil(fa) ? fa : cons(f(fa.head), mapList(fa.tail, f))

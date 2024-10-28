@@ -1,20 +1,4 @@
 /**
- * Functor preserves a structure
- * f.e mapping from Category C to Category D, where a ∈ C and b ∈ D:
- * a --F-> Fa (mapping from a to Fa via F)
- */
-
-/**
- * Functor is a mapping between Categories that preserves a structure
- * - map objects
- * - map arrows
- * - preserve identity arrows
- * - preserve composition of arrows
- *
- * Functor formalize the concept of recognizing a pattern in a structure
- */
-
-/**
  * interface Functor<F> {
  *   map: <A,B, ...>(f: A => B) => F<..., A> => F<..., B>
  * }
@@ -24,8 +8,8 @@ import * as E from 'fp-ts/Either'
 import { flow } from 'fp-ts/lib/function'
 import * as O from 'fp-ts/Option'
 
-import type { List } from './13-list_linked-list'
-import { cons, match as matchList, nil, showList } from './13-list_linked-list'
+import { cons, match as matchList, nil, showList } from '@shared/linked-list'
+import type { List } from '@shared/linked-list'
 
 type StrLength = (x: string) => number
 const strLength: StrLength = x => x.length

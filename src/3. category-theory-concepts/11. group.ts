@@ -1,24 +1,8 @@
-/**
- * Magma is a Set A and closed binary operation ×: A × A -> A
- * Semigroup is a Magma with Associativity on ×: a × (b × c) = (a × b) × c
- * Monoid is a Semigroup with Identity value: a × I = I × a = a
- * Group is a Monoid that each value has a unique inverse:
- *  a  x  a' = I
- *  a' ×  a  = I
- *
- * Group is fundamental structure in Math (ofc subject to laws: (composition definition, composition assoc-y, composition iden-y))
- * Group encodes the concept of symmetry
- */
-
 type Group<A> = {
   concat: (x: A, y: A) => A
   empty: A
   inverse: (a: A) => A
 }
-
-// Symmetry of triangle is simmertic regarding 120 deg * N + flipping around any axes
-
-// Example ==================================================
 
 // Example 1
 const addGroup: Group<number> = {

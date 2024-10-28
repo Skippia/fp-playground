@@ -2,10 +2,10 @@
 import { getFunctorComposition } from 'fp-ts/lib/Functor'
 import * as O from 'fp-ts/Option'
 
-import { cons, isNil, nil } from './13-list_linked-list'
-import type { List } from './13-list_linked-list'
-import type { _Functor1 } from './26-type-class'
-// import { ListFunctor1 } from './27-type-class-impl'
+import { cons, isNil, nil } from '@shared/linked-list'
+import type { List } from '@shared/linked-list'
+
+import type { _Functor1 } from '../2. type-theory_and_type-systems/3.1. type-classes'
 
 const mapList = <A, B>(fa: List<A>, f: (a: A) => B): List<B> =>
   isNil(fa) ? fa : cons(f(fa.head), mapList(fa.tail, f))

@@ -2,7 +2,7 @@ import axios from 'axios'
 import * as E from 'fp-ts/Either'
 import { pipe } from 'fp-ts/function'
 
-import { getAllResults } from './3-TaskEither-2'
+import { getAllResults } from './TaskEither-2'
 
 const notOnRight = (result: unknown) => {
   expect(result).toStrictEqual('Should be E.left')

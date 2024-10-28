@@ -1,3 +1,4 @@
+/* eslint-disable style/max-len */
 import * as A from 'fp-ts/Array'
 import * as B from 'fp-ts/lib/boolean'
 import { getSemigroup, pipe } from 'fp-ts/lib/function'

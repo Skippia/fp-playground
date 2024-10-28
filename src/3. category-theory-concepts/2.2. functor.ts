@@ -1,3 +1,4 @@
+/* eslint-disable ts/consistent-type-definitions */
 /* eslint-disable style/no-tabs */
 /**
  * In the last post about categories I presented the TS category (the TypeScript category) and the central problem with function composition
@@ -122,12 +123,10 @@ function liftT<B, C>(g: (b: B) => C): (fb: T.Task<B>) => T.Task<C> {
   return fb => () => fb().then(g)
 }
 
-export const URI = 'Response'
-
-export type URI = typeof URI
+type URI = 'Response'
 
 declare module 'fp-ts/HKT' {
-  type URItoKind<A> = {
+  interface URItoKind<A> {
     Response: Response<A>
   }
 }
@@ -145,7 +144,7 @@ function map<A, B>(fa: Response<A>, f: (a: A) => B): Response<B> {
 
 // functor instance for `Response`
 export const functorResponse: Functor1<URI> = {
-  URI,
+  URI: 'Response',
   map
 }
 
