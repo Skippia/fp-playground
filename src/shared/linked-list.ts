@@ -32,5 +32,5 @@ showList(myList)
 type LMatch = <A, B>(onNil: () => B, onCons: (head: A, tail: List<A>) => B) => (xs: List<A>) => B
 const match: LMatch = (onNil, onCons) => xs => (isNil(xs) ? onNil() : onCons(xs.head, xs.tail))
 
-export type { Cons, List, Nil }
+export type { Cons, List, LMatch, Nil }
 export { cons, isNil, match, myList, myListEmpty, nil, showList }

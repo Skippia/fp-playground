@@ -3,7 +3,7 @@ import type * as S from 'fp-ts/Semigroup'
 import { cons, match, nil } from '@shared/linked-list'
 import type { List } from '@shared/linked-list'
 
-import type { Magma } from './8. magma'
+import type { Magma } from './9. magma'
 
 type Semigroup<X> = {} & Magma<X>
 

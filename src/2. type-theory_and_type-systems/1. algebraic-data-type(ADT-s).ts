@@ -40,6 +40,8 @@ type Hour = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12
 type Period = 'AM' | 'PM'
 type Clock = [Hour, Period] // ? The Clock type has 12 * 2 = 24 inhabitants.
 
+const morning: Clock = [9, 'AM']
+
 /**
  *!  When should I use a product type? - Whenever its components are independent.
  * ? f.e type Clock = [Hour, Period] - Here Hour and Period are independent,
@@ -105,7 +107,7 @@ type List<A> = { type: 'Empty' } | { type: 'Element', value: A, next: List<A> }
 /**
  * ! Pattern matching
  * JavaScript doesn't have pattern matching (and so TypeScript) however
- * we can define a "poor man" pattern matching by defining a fold functi
+ * we can define a "poor man" pattern matching by defining a fold function
  */
 
 const fold = <A, R>(list: List<A>, onEmpty: () => R, onNext: (head: A, tail: List<A>) => R): R =>
@@ -147,8 +149,6 @@ type Option<A> =
     type: 'Some'
     value: A
   }
-// ? From the general formula C(Option<A>) = 1 + C(A),
-// ? we can derive for example the cardinality of Option<boolean>: 1 + 2 = 3 inhabitants.
 
 /**
  * ! When should I use a sum type?

@@ -1,6 +1,14 @@
+/* eslint-disable style/max-len */
 import { pipe } from 'fp-ts/lib/function'
+import type { HKT, Kind, URIS } from 'fp-ts/lib/HKT'
 import * as O from 'fp-ts/Option'
 
+/**
+ * [Definition]:
+ * A smart constructor is a function that encapsulates the logic of creating instances
+ * of a data type while enforcing certain invariants or validation rules.
+ * It ensures that only valid instances can be created.
+ */
 /**
  * ! The problem
  */
@@ -14,7 +22,7 @@ function person(name: NonEmptyString, age: Int): Person {
   return { name, age }
 }
 
-// person('', -1.2) // no error
+// person('', -1.2) // no error in runtime (in compile time yes, but is not sufficient)
 
 /**
  * ! The recipe:
@@ -36,6 +44,9 @@ export type NonEmptyStringBrand = {
 export type Int = number & IntBrand
 export type NonEmptyString = string & NonEmptyStringBrand
 
+export type MakeRefinement<F extends URIS, FromType, IntoType> = (f: FromType) => Kind<F, IntoType>
+export type MakeRefinementOption<FromType, IntoType> = MakeRefinement<'Option', FromType, IntoType>
+
 export function isInt(n: number): n is Int {
   return Number.isInteger(n) && n >= 0
 }
@@ -44,8 +55,8 @@ function isNonEmptyString(s: string): s is NonEmptyString {
   return s.length > 0
 }
 
-export const makeInt: (n: number) => O.Option<Int> = O.fromPredicate(isInt)
-export const makeNonEmptyString = O.fromPredicate(isNonEmptyString)
+export const makeInt: MakeRefinementOption<number, Int> = O.fromPredicate(isInt)
+export const makeNonEmptyString: MakeRefinementOption<string, NonEmptyString> = O.fromPredicate(isNonEmptyString)
 
 makeInt(10) // Some(10)
 makeInt(-5) // None
@@ -56,9 +67,9 @@ makeNonEmptyString('name') // Some(name)
 // ---------------------------
 
 // @ts-expect-error ...
-person('', -1.2) // static error
+person('', -1.2) // static error (error only in compile time)
 // @ts-expect-error ...
-person('xxx', -1.2) // static error
+person('xxx', -1.2) // static error (error only in compile time)
 
 const goodName = makeNonEmptyString('Giulio')
 const badName = makeNonEmptyString('')
@@ -71,10 +82,10 @@ const badAge = makeInt(-1.2)
 function checkPerson(name: O.Option<NonEmptyString>, age: O.Option<Int>): O.Option<Person> {
   return pipe(
     name,
-    O.flatMap(name2 =>
+    O.flatMap(name =>
       pipe(
         age,
-        O.map(age2 => person(name2, age2))
+        O.map(age => person(name, age))
       )
     )
   )
@@ -92,7 +103,7 @@ function _checkPerson(
   )
 }
 
-checkPerson(goodName, goodAge) // ?
-checkPerson(badName, goodAge) // ?
-checkPerson(goodName, badAge) // ?
-checkPerson(badName, badAge) // ?
+console.log(checkPerson(goodName, goodAge)) // ?
+console.log(checkPerson(badName, goodAge)) // ?
+console.log(checkPerson(goodName, badAge)) // ?
+console.log(checkPerson(badName, badAge)) // ?

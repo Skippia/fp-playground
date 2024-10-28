@@ -1,1 +1,1 @@
-export * from './measurePerformance'
+export * from './measure-performance'

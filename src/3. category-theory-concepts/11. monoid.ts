@@ -3,8 +3,8 @@ import { pipe } from 'fp-ts/lib/function'
 import { cons, match, nil } from '@shared/linked-list'
 import type { List } from '@shared/linked-list'
 
-import { addSemigroup, appendSemigroup, multiplySemigroup } from './9. semigroup'
-import type { Semigroup } from './9. semigroup'
+import { addSemigroup, appendSemigroup, multiplySemigroup } from './10. semigroup'
+import type { Semigroup } from './10. semigroup'
 
 type Monoid<M> = {
   empty: M

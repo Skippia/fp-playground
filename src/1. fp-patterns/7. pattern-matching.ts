@@ -3,10 +3,10 @@ import { pipe } from 'fp-ts/lib/function'
 import * as O from 'fp-ts/Option'
 import { makeMatch } from 'ts-adt/MakeADT'
 
-import type { List } from './13-list_linked-list'
-import { isNil, myList, myListEmpty, showList } from './13-list_linked-list'
+import { isNil, myList, myListEmpty, showList } from '@shared/linked-list'
+import type { LMatch } from '@shared/linked-list'
 
-// Option
+// ---------------------------Option---------------------------
 
 type OMatchW = <A, B, C>(onNone: () => B, onSome: (a: A) => C) => (x: O.Option<A>) => B | C
 
@@ -31,15 +31,19 @@ pipe(
   )
 ) // ?
 
-// Either
+// ---------------------------Either---------------------------
 
 type EMatch = <E, A, B>(onLeft: (e: E) => B, onRight: (a: A) => B) => (x: E.Either<E, A>) => B
 const ematch: EMatch = (onLeft, onRight) => x => (E.isLeft(x) ? onLeft(x.left) : onRight(x.right))
+const maybeError: E.Either<Error, number> = E.right(30)
 
-// List
+pipe(
+  maybeError,
+  ematch(e => `Error val: ${e.message}`, a => `Val is: ${a}`)
+)
 
-// The same as in 13-list_linked-list
-type LMatch = <A, B>(onNil: () => B, onCons: (head: A, tail: List<A>) => B) => (xs: List<A>) => B
+// ---------------------------List---------------------------
+
 const lmatch: LMatch = (onNil, onCons) => xs => (isNil(xs) ? onNil() : onCons(xs.head, xs.tail))
 
 pipe(
@@ -58,13 +62,15 @@ pipe(
   )
 ) // ?
 
-// ---------
+// ----------------------------------------------------------
 
 const matchError = makeMatch('type')
+const matchList = makeMatch('_tag')
 
+// 1
 const result = pipe(
   myList,
-  makeMatch('_tag')({
+  matchList({
     Nil: () => 'list is empty',
     Cons: ({ head, tail }) => `Head is ${head}`
   })

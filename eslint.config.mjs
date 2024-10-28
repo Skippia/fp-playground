@@ -1,6 +1,7 @@
 // eslint-disable-next-line import/no-named-as-default
 import antfu from '@antfu/eslint-config'
 import functional from 'eslint-plugin-functional'
+import noClosure from 'eslint-plugin-no-closure'
 import globals from 'globals'
 import tseslint from 'typescript-eslint'
 
@@ -14,7 +15,8 @@ export default antfu(
   {
     files: ['**/*.ts'],
     plugins: {
-      functional
+      functional,
+      noClosure
     },
     languageOptions: {
       parser: tseslint.parser,
@@ -24,7 +26,8 @@ export default antfu(
       }
     },
     rules: {
-      ...functional.configs.externalTypeScriptRecommended.rules
+      ...functional.configs.externalTypeScriptRecommended.rules,
+      'noClosure/no-tagged-closures': 'error',
       // ...functional.configs.recommended.rules,
       // ...functional.configs.lite.rules,
       // ...functional.configs.stylistic.rules,
@@ -164,14 +167,15 @@ export default antfu(
       // 'ts/no-loss-of-precision': 'error',
       'ts/no-redeclare': 'error',
       // 'ts/no-throw-literal': ['error', { allowThrowingAny: false, allowThrowingUnknown: false }],
-      'ts/no-shadow': [
-        'error',
-        {
-          allow: ['E', 'L', 'R', 'A', 'O', 'M', 'S'],
-          ignoreTypeValueShadow: true,
-          ignoreFunctionTypeParameterNameValueShadow: true
-        }
-      ],
+      // 'ts/no-shadow': [
+      //   'error',
+      //   {
+      //     allow: ['E', 'L', 'R', 'A', 'O', 'M', 'S'],
+      //     ignoreTypeValueShadow: true,
+      //     ignoreFunctionTypeParameterNameValueShadow: true
+      //   }
+      // ],
+      'ts/no-shadow': 'off', // !!!
       'ts/no-unused-expressions': 'error',
       // 'ts/no-useless-constructor': 'error',
       'ts/require-await': 'error',
@@ -228,7 +232,6 @@ export default antfu(
       // 'no-redeclare': 'off',
       // 'require-await': 'off',
       // 'no-unused-expressions': 'off',
-
       'no-throw-literal': 'off',
       'no-shadow': 'off',
       'no-unused-vars': 'off',
