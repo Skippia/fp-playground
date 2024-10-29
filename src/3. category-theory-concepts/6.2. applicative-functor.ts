@@ -1,4 +1,4 @@
-/* eslint-disable ts/no-shadow */
+import type { HKT, Kind } from 'fp-ts/HKT'
 import { pipe } from 'fp-ts/lib/function'
 import * as O from 'fp-ts/lib/Option'
 /**
@@ -111,11 +111,4 @@ console.log(result3)
  * Instead of using map, you can use return function on the function f first,
  * which becomes F: Container<(a: A) => (b: B))> ,
  * and then use apply on F and Container<(a: A)> to get the result Container<(b: B)>.
- */
-
-/**
- * ! Applicative functor laws
- * There are four applicative functor laws you need to follow
- * if you are going to create your own applicative functor:
- * - Identity, Homomorphism, Interchange and Composition.
  */

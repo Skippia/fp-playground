@@ -17,8 +17,10 @@ type _Functor<F> = {
 }
 
 type _Functor1<F extends _URIS> = {
-  URI: F
+  URI: F // Option
   map: <A, B>(fa: _Kind<F, A>, f: (a: A) => B) => _Kind<F, B>
+  // map: <A, B>(fa: O.Option<A>, f: (a: A) => B) => O.Option<B>
+
 }
 
 type _Functor2<F extends _URIS2> = {
@@ -28,5 +30,3 @@ type _Functor2<F extends _URIS2> = {
 }
 
 export type { _Functor, _Functor1, _Functor2 }
-
-// /

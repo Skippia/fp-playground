@@ -5,15 +5,15 @@
 
 import type { Eq } from 'fp-ts/Eq'
 import { contramap as _contramap, fromEquals } from 'fp-ts/Eq'
+import { contramap as __contramap } from 'fp-ts/Ord'
 
 type User = {
   id: number
+  name: string
 }
 
 const contramap: <A, B>(f: (b: B) => A) => (E: Eq<A>) => Eq<B>
-  = <A, B>(f: (b: B) => A) =>
-    (E: Eq<A>): Eq<B> =>
-      fromEquals((x, y) => E.equals(f(x), f(y)))
+  = f => E => fromEquals((x, y) => E.equals(f(x), f(y)))
 
 const numberEq: Eq<number> = {
   equals: (a, b) => a === b
@@ -40,9 +40,9 @@ const eqUsers: Eq<Array<User>> = getEq(eqUser)
 
 // --------------------------
 
-eqUser.equals({ id: 1 }, { id: 1 }) // ?
+eqUser.equals({ id: 1, name: 'A' }, { id: 1, name: 'B' }) // true
 
 eqUsers.equals(
-  [{ id: 1 }, { id: 2 }, { id: 3 }, { id: 4 }],
-  [{ id: 1 }, { id: 2 }, { id: 3 }, { id: 4 }]
-) // ?
+  [{ id: 1, name: 'A' }, { id: 2, name: 'B' }, { id: 3, name: 'C' }, { id: 4, name: 'D' }],
+  [{ id: 1, name: 'D' }, { id: 2, name: 'C' }, { id: 3, name: 'B' }, { id: 4, name: 'A' }]
+) // true

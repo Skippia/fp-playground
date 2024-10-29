@@ -1,8 +1,11 @@
-/* eslint-disable ts/no-redundant-type-constituents */
-/* eslint-disable ts/no-unsafe-call */
+/* eslint-disable style/max-len */
+/* eslint-disable no-redeclare */
+/* eslint-disable ts/no-redeclare */
 /* eslint-disable style/no-tabs */
-import type * as Apply from 'fp-ts/Apply'
-import type { HKT } from 'fp-ts/HKT'
+import type * as App from 'fp-ts/Apply'
+import * as A from 'fp-ts/Array'
+import * as F from 'fp-ts/Functor'
+import type { HKT, Kind, URIS } from 'fp-ts/HKT'
 import * as O from 'fp-ts/Option'
 import type * as T from 'fp-ts/Task'
 
@@ -23,15 +26,15 @@ export type Response<A> = {
  * What we want is a lifting operation,
  * let't call it liftA2 in order to distinguish it from our old lift,
  * that outputs a function with the following signature:
- * ? liftA2(g): (fb: F<B>) => (fc: F<C>) => F<D>
+ * ? liftA2(g): (fa: F<A>) => (fb: F<B>) => F<B>
  */
 
 /**
  * How can we get there? Since g is now unary, we can use the functor instance and our old lift:
- * ? lift(g): (fb: F<B>) => F<(c: C) => D>
+ * ? lift(g): (fa: F<A>) => F<(b: B) => C>
  * But now we are stuck:
  * there's no legal operation on the functor instance which is able
- * to unpack the value F<(c: C) => D> to a function (fc: F<C>) => F<D>.
+ * to unpack the value F<(b: B) => C> to a function (fb: F<B>) => F<C>.
  */
 
 /**
@@ -39,26 +42,14 @@ export type Response<A> = {
  * So let's introduce a new abstraction Apply that owns such a unpacking operation (named ap)
  */
 type Apply<F> = {
-  ap: <C, D>(fcd: HKT<F, (c: C) => D>, fc: HKT<F, C>) => HKT<F, D>
+  ap: <A, B>(fab: HKT<F, (a: A) => B>, fa: HKT<F, A>) => HKT<F, B>
 } & F.Functor<F>
 
 /**
  * The ap function is basically unpack with the arguments rearranged:
- * ? unpack: <C, D>(fcd: HKT<F, (c: C) => D>) => ((fc: HKT<F, C>) => HKT<F, D>)
- * ? ap:     <C, D>(fcd: HKT<F, (c: C) => D>, fc: HKT<F, C>) => HKT<F, D>
+ * ? unpack: <A, B>(fab: HKT<F, (a: A) => B>) => ((fa: HKT<F, A>) => HKT<F, B>)
+ * ? ap:     <A, B>(fab: HKT<F, (a: A) => B>, fa: HKT<F, A>) => HKT<F, B>
  * so ap can be derived from unpack (and viceversa).
- */
-
-/**
- * ! Applicative
- * Moreover it would be handy if there exists an operation which is able
- * to lift a value of type A to a value of type F<A>.
- * This way we could call the liftA2(g) function either by providing arguments
- * of type F<B> and F<C> or by lifting values of type B and C.
- */
-
-/**
- * So let's introduce the Applicative abstraction which builds upon Apply and owns such operation (named of)
  */
 
 type Applicative<F> = {
@@ -69,19 +60,21 @@ type Applicative<F> = {
 const applicativeArray = {
   map: <A, B>(fa: A[], f: (a: A) => B): B[] => fa.map(f),
   of: <A>(a: A): A[] => [a],
-  ap: <A, B>(fab: ((a: A) => B)[], fa: A[]): B[][] => fab.map(f => fa.map(f))
+  ap: <A, B>(fab: ((a: A) => B)[], fa: A[]): B[] => fab.flatMap(f => fa.map(f))
 }
 
 const numbers = [1, 2, 3]
 const transformFunctions = [(x: number) => x * 2, (x: number) => x * 3, (x: number) => x * 4]
 
-applicativeArray.map(numbers, x => x * 2) // ?
-applicativeArray.of(42) // ?
-applicativeArray.ap(transformFunctions, numbers) // ?
+console.log(applicativeArray.map(numbers, x => x * 2)) // ?
+console.log(applicativeArray.of(42))
+console.log(applicativeArray.ap(transformFunctions, numbers))
+console.log(A.Applicative.ap(transformFunctions, numbers))
 
 // Example (F = Option)
 
 const applicativeOption = {
+  URI: 'Option' as const,
   map: <A, B>(fa: O.Option<A>, f: (a: A) => B): O.Option<B> =>
     O.isNone(fa) ? O.none : O.some(f(fa.value)),
   of: <A>(a: A): O.Option<A> => O.some(a),
@@ -91,9 +84,9 @@ const applicativeOption = {
 const numberOption: O.Option<number> = O.some(3)
 const doubleFunctionOption: O.Option<(x: number) => number> = O.some((x: number) => x * 2)
 
-applicativeOption.map(numberOption, x => x * 2) // ?
-applicativeOption.of(42) // ?
-applicativeOption.ap(doubleFunctionOption, numberOption) // ?
+console.log(applicativeOption.map(numberOption, x => x * 2))
+console.log(applicativeOption.of(42))
+console.log(applicativeOption.ap(doubleFunctionOption, numberOption))
 
 // Example (F = Task)
 const applicativeTask = {
@@ -114,27 +107,26 @@ const fetchNumberTask: T.Task<number> = () => Promise.resolve(3)
 const doubleFunctionTask: T.Task<(x: number) => number> = () =>
   Promise.resolve((x: number) => x * 2) // Promise<6>
 
-applicativeTask.map(fetchNumberTask, x => x * 2) // ?
-applicativeTask.of(42) // Promise<42>
-applicativeTask.ap(doubleFunctionTask, fetchNumberTask) // Promise<6>
+void applicativeTask.map(fetchNumberTask, x => x * 2)() // 6
+void applicativeTask.of(42)() // 42
+void applicativeTask.ap(doubleFunctionTask, fetchNumberTask)() // 6
 
 /**
  * Lifting
  * ? So given an instance of Apply for F can we now write liftA2?
  */
 
-type Curried2<B, C, D> = (b: B) => (c: C) => D
+type TLiftA2<F extends URIS> = (F: App.Apply1<F>) => <A, B>(f: (a: A) => (b: A) => B) => (fa: Kind<F, A>) => (fb: Kind<F, A>) => Kind<F, B>
 
-function liftA2<F>(
-  F: Apply<F>
-): <B, C, D>(g: Curried2<B, C, D>) => Curried2<HKT<F, B>, HKT<F, C>, HKT<F, D>> {
-  return g => fb => fc => F.ap(F.map(fb, g), fc)
+const liftA2: TLiftA2<'Option'> = F => f => fa => (fb) => {
+  const x = F.map(fa, f)
+  return F.ap(x, fb) // F.ap(O.Option<(b: A) => B>, O.Option<A>)
 }
+const add = (a: number) => (b: number): number => a + b
+const optionA = O.some(3)
+const optionB = O.some(4)
 
-// const add = (a: number, b: number): number => a + b
-// const optionA = O.some(3)
-// const optionB = O.some(4)
-// liftA2(apply)(add)(optionA)(optionB);
+console.log(liftA2(applicativeOption)(add)(optionA)(optionB))
 /**
  * Nice! But what about functions with three arguments? Do we need yet another abstraction?
  *
