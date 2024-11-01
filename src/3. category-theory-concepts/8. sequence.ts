@@ -1,4 +1,5 @@
 import * as A from 'fp-ts/lib/Array'
+import * as E from 'fp-ts/lib/Either'
 import { pipe } from 'fp-ts/lib/function'
 import * as O from 'fp-ts/lib/Option'
 import * as T from 'fp-ts/lib/Tree'
@@ -23,3 +24,5 @@ const c = T.sequence(O.option)(t2)
 console.log(a)
 console.log(b)
 console.log(c)
+
+// ------------------------------

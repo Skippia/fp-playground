@@ -1,5 +1,9 @@
+/* eslint-disable no-unused-expressions */
+/* eslint-disable ts/no-unused-expressions */
 import * as A from 'fp-ts/Array'
-import * as O from 'fp-ts/Option'
+import { flow, pipe } from 'fp-ts/lib/function'
+import * as O from 'fp-ts/lib/Option'
+import { compose } from 'ramda'
 
 /**
  * f: (a: A) => M<B>
@@ -9,25 +13,25 @@ import * as O from 'fp-ts/Option'
  */
 
 // ? Example M = Array
-type User = {
-  followers: User[]
-}
+// type User = {
+//   followers: User[]
+// }
 
-const getFollowers = (user: User): User[] => user.followers
+// const getFollowers = (user: User): User[] => user.followers
 
-declare const user: User
+// declare const user: User
 
-const _followersOfFollowers: User[][] = getFollowers(user).map(getFollowers)
-const followersOfFollowers: Array<User> = A.flatten(getFollowers(user).map(getFollowers))
+// const _followersOfFollowers: User[][] = getFollowers(user).map(getFollowers)
+// const followersOfFollowers: User[] = A.flatten(getFollowers(user).map(getFollowers))
 
-// ? Example (M = Option)
-const inverse = (n: number): O.Option<number> => (n === 0 ? O.none : O.some(1 / n))
+// // ? Example (M = Option)
+// const inverse = (n: number): O.Option<number> => (n === 0 ? O.none : O.some(1 / n))
 
-const _inverseHead: O.Option<O.Option<number>> = O.Functor.map(A.head([1, 2, 3]), inverse)
+// const _inverseHead: O.Option<O.Option<number>> = O.Functor.map(A.head([1, 2, 3]), inverse)
 
-const flatten = <A>(mma: O.Option<O.Option<A>>): O.Option<A> => (O.isNone(mma) ? O.none : mma.value)
+// const flatten = <A>(mma: O.Option<O.Option<A>>): O.Option<A> => (O.isNone(mma) ? O.none : mma.value)
 
-const inverseHead: O.Option<number> = flatten(O.Functor.map(A.head([1, 2, 3]), inverse))
+// const inverseHead: O.Option<number> = flatten(O.Functor.map(A.head([1, 2, 3]), inverse))
 
 /**
  * All those flatten functions... It's not a coincidence, there's a functional pattern under the hood.
@@ -60,3 +64,89 @@ const inverseHead: O.Option<number> = flatten(O.Functor.map(A.head([1, 2, 3]), i
  */
 
 // ...
+
+/**
+ * ! Association law
+ */
+const mcompose = <T>(f: (a: T) => O.Option<T>, g: (...args: any[]) => O.Option<T>) =>
+  compose(O.flatMap(f), g)
+
+const multi = (x: number): O.Option<number> => O.of(x * 3)
+const division = (x: number): O.Option<number> => O.of(x / 5)
+const add = (x: number): O.Option<number> => O.of(x + 33)
+
+// Option<number> => Option<number> // 39
+const way0 = compose(
+  O.flatMap(add),
+  O.flatMap(division),
+  multi
+) // compose(chain(x),chain(y),z)
+
+const way1 = compose(
+  O.flatMap(add),
+  compose(O.flatMap(division), multi)
+) // compose(x,compose(chain(y),chain(z)))
+
+const way2 = compose(
+  compose(O.flatMap(add), O.flatMap(division)),
+  multi // z
+) // compose(compose(chain(x),chain(y)),z)
+
+const xxx = O.flatMap(
+  compose(O.flatMap(add), division)
+)
+
+// Option<number> => Option<number> // 39
+const way3 = compose(
+  O.flatMap(
+    compose(O.flatMap(add), division)
+  ),
+  multi
+) // compose(chain(compose(chain(x),y)), z)
+
+// ! Summary:
+// ? chain(compose(chain(x),y)) === compose(chain(x), chain(y))
+// ? chain(chain(x) ∘ y) === chain(x) ∘ chain(y)
+const left = O.flatMap(compose(O.flatMap(add), division))
+/**
+ * ! compose(f,g) = f(g) = f(g(x))
+ * O.flatMap(compose(O.flatMap(add), division))
+ * O.flatMap(O.flatMap(add)(division(x)))
+ * O.flatMap(add(division(x))
+ * O.flatMap(add)(division(10))
+ * O.flatMap(add)(O.of(2))
+ * add(2)
+ */
+const right = compose(O.flatMap(add), O.flatMap(division))
+/**
+ * ! compose(f,g) = f(g) = f(g(x))
+ * compose(O.flatMap(add), O.flatMap(division)) = O.flatMap(add)(O.flatMap(division)(x))
+ * O.flatMap(add)(O.flatMap(division)(O.of(10)))
+ * O.flatMap(add)(division)(10)
+ * O.flatMap(add)(O.of(2))
+ * add(2)
+ */
+
+console.log(left(O.of(10))) // 35
+console.log(right(O.of(10))) // 35
+
+console.log(way0(10)) // 39
+console.log(way1(10)) // 39
+console.log(way2(10)) // 39
+console.log(way3(10)) // 39
+
+// ! OR
+console.log(mcompose(mcompose(add, division), multi)(10))
+console.log(mcompose(add, mcompose(division, multi))(10))
+
+/**
+ * ! Identity law
+ */
+// ! OR
+console.log(mcompose(O.Monad.of, add)(10))
+console.log(mcompose(add, O.Monad.of)(10))
+// the same as previous
+console.log(compose(O.flatMap(add), O.Monad.of)(10))
+console.log(compose(O.flatMap(O.Monad.of), add)(10))
+
+console.log(add(10))

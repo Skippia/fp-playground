@@ -18,3 +18,14 @@ const pointfreeUpEx = flow(toUpperCase, exclaim)
 
 console.log(pointfulUpEx('hello')) // HELLO!
 console.log(pointfreeUpEx('hello')) // HELLO!
+
+// -------------------------------------------------
+/*
+// !! not pointfree because we mention the data: name
+const initials = name => name.split(' ').map(compose(toUpperCase, head)).join('. ')
+
+// !! pointfree
+const initials = compose(intercalate('. '), map(compose(toUpperCase, head)), split(' '))
+
+initials('hunter stockton thompson') // 'H. S. T'
+ */

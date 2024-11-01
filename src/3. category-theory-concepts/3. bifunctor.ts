@@ -10,6 +10,7 @@
 
 import * as E from 'fp-ts/Either'
 import type { Kind2, URIS2 } from 'fp-ts/HKT'
+import { pipe } from 'fp-ts/lib/function'
 
 type Bifunctor2<F extends URIS2> = {
   URI: F
@@ -42,3 +43,29 @@ console.dir(
   },
   { depth: Infinity }
 )
+
+// ------------------------
+
+const l1 = E.left('Error 1') as E.Left<string>
+const l2 = E.left('Error 2') as E.Left<string>
+
+const r: E.Either<string, number> = E.of(1)
+const r2: E.Either<string, number> = E.left('Initial error')
+
+const combineErrors = (customError: E.Left<string>) => (e: string[] | string): string[] =>
+  Array.isArray(e) ? [...e, customError.left] : [e, customError.left]
+
+const res = pipe(
+  // r,
+  r2,
+  E.bimap(
+    combineErrors(l1),
+    a => a + 1
+  ),
+  E.bimap(
+    combineErrors(l2),
+    a => a * 2
+  )
+)
+
+console.log(res)
