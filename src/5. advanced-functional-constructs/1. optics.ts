@@ -111,4 +111,3 @@ console.dir({ modifiedDataOptics }, { depth: null })
 
 // console.dir({ exampleData }, { depth: null })
 // console.dir(postsLens.set(exampleData[0]!.posts)({ login: 'vasiliy', name: 'Vasiliy', posts: [] }), { depth: Infinity })
-

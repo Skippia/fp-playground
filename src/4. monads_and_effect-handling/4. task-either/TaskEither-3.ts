@@ -70,10 +70,6 @@ void monadicWay()
  * By default, TaskEither.traverseArray use the Monadic style to traverse the array,
  * meaning that it returns the first error sequentially (instead of simultaneous?). Be aware that this
  * behavior is different from Promise.all, which returns the first Promise that is rejected first.
- * If you increase the fourth timer to for example 4000, which becomes longer than the last timer,
- * you will get the Promise with timer 3000 (The fifth timer) if you use Promise.all .
- * If you use TaskEither.traverseArray , you will get the Promise with time 4000 instead.
- *
  * ! I would recommend the following way to mimic the behavior of Promise.all with TaskEither:
  */
 
@@ -136,9 +132,11 @@ const applicativeWay = async () => {
   try {
     const getResult = pipe(
       timers,
-      A.map(timerToTaskEither), //
+      A.map(timerToTaskEither),
       A.sequence(T.ApplicativePar)
     )
+
+    const z = A.sequence(T.ApplicativePar)(A.map(timerToTaskEither)(timers))
 
     const result = await getResult() // ?
   }
@@ -157,7 +155,7 @@ const promiseRace = async () => {
 
   const getResultRaceMonoid = pipe(
     timers,
-    A.map(timerToTaskEither), //
+    A.map(timerToTaskEither),
     monoid.concatAll(raceMonoid)
   )
 

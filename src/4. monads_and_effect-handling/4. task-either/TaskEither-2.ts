@@ -126,7 +126,7 @@ const main = async () => {
 }
 
 /**
- * The default behaviour for TE.bind - to trigger only [the function which it receives
+ * The default behavior for TE.bind - to trigger only [the function which it receives
  * for processing the input data] only if [the input data is a TaskEither.right value].
  *
  * For example, in case 2, when the fetching of user failed, axios.get is triggered only once for fetching the user.
@@ -141,9 +141,9 @@ const main = async () => {
  */
 
 // Inside TaskEither
-const bind = (keyname, fn) => (ma) => {
+const bind = (keyname: string, fn: Function) => (ma: TE.TaskEither<Error, string>) => {
   // if it receives a TaskEither.left value, just return it
-  if (E.isLeft(ma)) {
+  if (TE.isLeft(ma)) {
     return ma
   }
 
@@ -154,16 +154,13 @@ const bind = (keyname, fn) => (ma) => {
   */
   return (
     ma()
-      // a is an Either
-      .then((a) => {
-        if (E.isLeft(a)) {
-          return TE.left(a)
-        }
-        return TE.right({
+      .then(a => E.isLeft(a)
+        ? TE.left(a)
+        : TE.right({
           ...a.right,
           [keyname]: fn(a.right)
         })
-      })
+      )
   )
 }
 
