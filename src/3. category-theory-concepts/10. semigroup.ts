@@ -13,16 +13,16 @@ const appendSemigroup: S.Semigroup<string> = { concat: (x, y) => x.concat(y) }
 
 const concatAll
   = <A>(s: S.Semigroup<A>) =>
-    (startWith: A) =>
+    (startWithEl: A) =>
       (xs: List<A>): A =>
         match(
-          () => startWith,
-          (head: A, tail: List<A>) => s.concat(head, concatAll(s)(startWith)(tail))
+          () => startWithEl,
+          (head: A, tail: List<A>) => s.concat(head, concatAll(s)(startWithEl)(tail))
         )(xs)
 
-concatAll(addSemigroup)(0)(cons(2, cons(3, cons(4, nil)))) // ?
-concatAll(multiplySemigroup)(1)(cons(2, cons(3, cons(4, nil)))) // ?
-concatAll(appendSemigroup)('')(cons('hello', cons(' ', cons('world!', nil)))) // ?
+concatAll(addSemigroup)(0)(cons(2, cons(3, cons(4, nil)))) // * 9
+concatAll(multiplySemigroup)(1)(cons(2, cons(3, cons(4, nil)))) // * 24
+concatAll(appendSemigroup)('')(cons('hello', cons(' ', cons('world!', nil)))) // * hello world!
 
 export type { Semigroup }
 export { addSemigroup, appendSemigroup, multiplySemigroup }

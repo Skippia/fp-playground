@@ -119,5 +119,5 @@ const z1 = pipe(
 )
 const z2 = pipe(
   getPartIds(), // => TE.TaskEither<Error, string[]>
-  TE.flatMap(A.traverse(TE.Monad)(getPart)) // => TE.TaskEither<Error, Blob[]>
+  TE.flatMap(A.traverse(TE.ApplicativePar)(getPart)) // => TE.TaskEither<Error, Blob[]>
 )

@@ -27,7 +27,7 @@ const arrPromisesToPromisesAll = TE.tryCatchK(
   reason => new Error(String(reason))
 )
 
-const timers = [1000, 1000, 1000, 100, 1000, 1000, 3000]
+const timers = [1000, 1000, 1000, 100, 1000, 1000, 1400]
 
 // ! Example — the most simple
 const f = () => pipe(
@@ -47,7 +47,7 @@ const x = pipe(
 
 // ! Example 3
 const y = pipe(
-  timers,
+  [1000, 1000, 1000, 100, 1000, 1000, 1400],
   A.map(timerToTaskEither),
   A.sequence(TE.ApplicativePar)
 ) // Run in parallel (promise all)
@@ -56,6 +56,12 @@ const y = pipe(
 const z = pipe(
   timers,
   TE.traverseArray(timerToTaskEither)
+) // Run in parallel (promise all)
+
+const n = pipe(
+  timers,
+  A.map(timerToTaskEither),
+  TE.sequenceArray
 ) // Run in parallel (promise all)
 
 const t = pipe(

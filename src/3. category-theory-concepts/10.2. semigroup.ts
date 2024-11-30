@@ -1,10 +1,12 @@
-/* eslint-disable style/max-len */
 import * as A from 'fp-ts/Array'
 import * as B from 'fp-ts/lib/boolean'
 import { getSemigroup, pipe } from 'fp-ts/lib/function'
+import * as M from 'fp-ts/lib/Monoid'
+import * as N from 'fp-ts/lib/number'
 import * as O from 'fp-ts/lib/Option'
-import * as Or from 'fp-ts/Ord'
-import * as S from 'fp-ts/Semigroup'
+import * as S from 'fp-ts/lib/Semigroup'
+import * as Str from 'fp-ts/lib/string'
+import * as Ord from 'fp-ts/Ord'
 /**
  * ? A semigroup is a pair (A, *) in which A is a non-empty set and * is a binary associative operation on A,
  * ? i.e. a function that takes two elements of A as input and returns an element of A as output...
@@ -90,62 +92,64 @@ function of<A>(a: A): Array<A> {
  */
 
 /** Takes the minimum of two values */
-const semigroupMin: S.Semigroup<number> = S.min(Or.ordNumber)
+const semigroupMin: S.Semigroup<number> = S.min(N.Ord)
 
 /** Takes the maximum of two values  */
-const semigroupMax: S.Semigroup<number> = S.max(Or.ordNumber)
+const semigroupMax: S.Semigroup<number> = S.max(N.Ord)
 
 semigroupMin.concat(2, 1) // ?
 semigroupMax.concat(2, 1) // ?
 
 // ---------------------------------------------------
 
-type Point = {
-  x: number
-  y: number
-}
+type Point = { x: number, y: number }
+type Vector = { from: Point, to: Point }
 
-const semigroupPoint: S.Semigroup<Point> = {
+const _semigroupPoint: S.Semigroup<Point> = {
   concat: (p1, p2) => ({
-    x: semigroupSum.concat(p1.x, p2.x),
-    y: semigroupSum.concat(p1.y, p2.y)
+    x: p1.x + p2.x,
+    y: p1.y + p2.y,
   })
 }
-
-semigroupPoint.concat({ x: 4, y: 1 }, { x: 2, y: 9 }) // ?
-
-const _semigroupPoint: S.Semigroup<Point> = S.struct({
-  x: semigroupSum,
-  y: semigroupSum
+const semigroupPoint: S.Semigroup<Point> = S.struct<Point>({
+  x: N.SemigroupSum,
+  y: N.SemigroupSum,
 })
 
-type Vector = {
-  from: Point
-  to: Point
-}
-
-const semigroupVector: S.Semigroup<Vector> = S.struct({
+const semigroupVector: S.Semigroup<Vector> = S.struct<Vector>({
   from: semigroupPoint,
-  to: semigroupPoint
+  to: semigroupPoint,
 })
 
-semigroupVector.concat(
+const x = semigroupVector.concat(
   { from: { x: 1, y: 9 }, to: { x: 3, y: 1 } },
   { from: { x: 9, y: 1 }, to: { x: 2, y: 0 } }
-) // ?
+) // { from: { x: 10, y: 10 }, to: { x: 5, y: 1 } }
 
-/** `semigroupAll` is the boolean semigroup under conjunction */
-const semigroupPredicate: S.Semigroup<(p: Point) => boolean> = getSemigroup(B.SemigroupAll)<Point>()
+const isXPositive = (p: Point) => p.x > 0
+const isYPositive = (p: Point) => p.y > 0
+const isPointInteger = (p: Point) => Number.isInteger(p.x) && Number.isInteger(p.y)
 
-const isPositiveX = (p: Point): boolean => p.x >= 0
-const isPositiveY = (p: Point): boolean => p.y >= 0
+const isBooleanPointCriteria = getSemigroup(B.SemigroupAll)<Point>()
 
-const isPositiveXY = semigroupPredicate.concat(isPositiveX, isPositiveY)
+const isPositivePoint = isBooleanPointCriteria.concat(isXPositive, isYPositive)
+const isPositiveAndIntegerPoint = pipe(
+  [isYPositive, isYPositive, isPointInteger],
+  pipe(() => true, S.concatAll(isBooleanPointCriteria))
+)
 
-isPositiveXY({ x: 1, y: 1 }) // ?
-isPositiveXY({ x: 1, y: -1 }) // ?
-isPositiveXY({ x: -1, y: 1 }) // ?
-isPositiveXY({ x: -1, y: -1 }) // ?
+console.log(isPositivePoint({ x: 1, y: 1 })) //
+console.log(isPositivePoint({ x: 1, y: -1 })) //
+console.log(isPositivePoint({ x: -1, y: 1 })) //
+console.log(isPositivePoint({ x: -1, y: -1 })) //
+
+console.log(isPositiveAndIntegerPoint({ x: 1, y: -1 })) //
+console.log(isPositiveAndIntegerPoint({ x: -1, y: 1 })) //
+console.log(isPositiveAndIntegerPoint({ x: -1, y: -1 })) //
+console.log(isPositiveAndIntegerPoint({ x: 1.1, y: 1 })) //
+console.log(isPositiveAndIntegerPoint({ x: 1, y: 1.1 })) //
+console.log(isPositiveAndIntegerPoint({ x: 1.1, y: 1.1 })) //
+console.log(isPositiveAndIntegerPoint({ x: 1, y: 1 })) //
 
 // --------------------------------------------------
 
@@ -182,8 +186,8 @@ product(1)([1, 2, 3, 4]) // ?
 
 const _S = O.getApplySemigroup(semigroupSum)
 
-_S.concat(O.some(1), O.none) // ?
-_S.concat(O.some(1), O.some(2)) // ?
+_S.concat(O.some(1), O.none) // ?  O.none
+_S.concat(O.some(1), O.some(2)) // ? O.some(3)
 
 // ----------------------------------------------------
 /**
@@ -191,50 +195,99 @@ _S.concat(O.some(1), O.some(2)) // ?
  */
 type Customer = {
   name: string
-  favouriteThings: Array<string>
-  registeredAt: number // since epoch
-  lastUpdatedAt: number // since epoch
+  favoriteThings: string[]
+  registeredAt: number
+  lastUpdatedAt: number
   hasMadePurchase: boolean
 }
 
+// ? semigroup merge strategy
 const semigroupCustomer: S.Semigroup<Customer> = S.struct({
-  // keep the longer name
-  // name: S.max(Ord.contramap((s: string) => s.length)(Ord.ordNumber)),
-  name: pipe(
-    Or.ordNumber,
-    Or.contramap((el: string) => el.length),
-    S.max
+  // ? keep the longer name
+  name: S.max(
+    Ord.contramap((s: string) => s.length)(N.Ord)
   ),
-  // accumulate things
-  favouriteThings: A.getMonoid<string>(), // <= getMonoid returns a Semigroup for `Array<string>` see later
-  // keep the least recent date
-  registeredAt: S.min(Or.ordNumber),
-  // keep the most recent date
-  lastUpdatedAt: S.max(Or.ordNumber),
-  // Boolean semigroup under disjunction
+  // ? accumulate favorite things
+  favoriteThings: A.getMonoid<string>(),
+  // ? keep the least recent date
+  registeredAt: S.min(N.Ord),
+  // ? keep the most recent date
+  lastUpdatedAt: S.max(N.Ord),
+  // ? mark as true if any purchases were ever made
   hasMadePurchase: B.SemigroupAny
 })
 
-semigroupCustomer.concat(
+// ? ℹ️ create our own Monoid
+const longestStringMonoid: M.Monoid<string> = {
+  concat: (x, y) => (x.length > y.length ? x : y),
+  empty: ''
+}
+
+// ? monoid merge strategy
+const monoidCustomer: M.Monoid<Customer> = M.struct({
+  name: longestStringMonoid,
+  favoriteThings: A.getMonoid<string>(),
+  registeredAt: M.min(N.Bounded),
+  lastUpdatedAt: M.max(N.Bounded),
+  hasMadePurchase: B.MonoidAny
+})
+
+const mockedCustomerRecordCollection: Customer[] = [
   {
-    name: 'Giulio',
-    favouriteThings: ['math', 'climbing'],
-    registeredAt: new Date(2018, 1, 20).getTime(),
-    lastUpdatedAt: new Date(2018, 2, 18).getTime(),
+    name: 'Bobby',
+    favoriteThings: ['cooking', 'reading'],
+    registeredAt: new Date(2020, 1, 20).getTime(),
+    lastUpdatedAt: new Date(2020, 2, 18).getTime(),
     hasMadePurchase: false
   },
   {
-    name: 'Giulio Canti',
-    favouriteThings: ['functional programming'],
+    name: '',
+    favoriteThings: ['functional programming'],
     registeredAt: new Date(2018, 1, 22).getTime(),
     lastUpdatedAt: new Date(2018, 2, 9).getTime(),
+    hasMadePurchase: false
+  },
+  {
+    name: 'Bobby Axelrod',
+    favoriteThings: ['playing guitar'],
+    registeredAt: new Date(1971, 1, 1).getTime(),
+    lastUpdatedAt: new Date(5000, 1, 1).getTime(),
     hasMadePurchase: true
   }
-) // ?
-/*
-{ name: 'Giulio Canti',
-  favouriteThings: [ 'math', 'climbing', 'functional programming' ],
-  registeredAt: 1519081200000, // new Date(2018, 1, 20).getTime()
-  lastUpdatedAt: 1521327600000, // new Date(2018, 2, 18).getTime()
-  hasMadePurchase: true }
-*/
+]
+
+const doubleMerged = monoidCustomer.concat(
+  mockedCustomerRecordCollection[0] as Customer,
+  mockedCustomerRecordCollection[1] as Customer
+)
+
+const allMerged = pipe(
+  mockedCustomerRecordCollection,
+  pipe(
+    mockedCustomerRecordCollection[0]!,
+    S.concatAll(monoidCustomer)
+  )
+)
+
+/* {
+ ? name: 'Bobby',
+ ? favoriteThings: [ 'cooking', 'reading', 'functional programming' ],
+ ? registeredAt: 1519246800000,
+ ? lastUpdatedAt: 1584478800000,
+ ? hasMadePurchase: false
+} */
+console.log(doubleMerged)
+
+/* {
+  ? name: 'Bobby Axelrod',
+  ? favoriteThings: [
+  ?  'cooking', 'reading', 'cooking', 'reading', 'functional programming', 'playing guitar'
+  ? ],
+  ? registeredAt: 34203600000,
+  ? lastUpdatedAt: 95620251600000,
+  ? hasMadePurchase: true
+}
+ */
+console.log(allMerged)
+
+// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>

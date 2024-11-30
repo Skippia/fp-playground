@@ -1,80 +1,67 @@
-import { monoid } from 'fp-ts'
-import * as Apply from 'fp-ts/Apply'
 import * as A from 'fp-ts/Array'
-import type * as E from 'fp-ts/Either'
-import { pipe } from 'fp-ts/function'
-import * as T from 'fp-ts/Task'
-import * as TE from 'fp-ts/TaskEither'
+import * as B from 'fp-ts/lib/boolean'
+import * as F from 'fp-ts/lib/Foldable'
+import { getSemigroup, pipe } from 'fp-ts/lib/function'
+import * as M from 'fp-ts/lib/Monoid'
+import * as N from 'fp-ts/lib/number'
+import * as O from 'fp-ts/lib/Option'
+import { getSemigroupAny } from 'fp-ts/lib/Predicate'
+import type { Predicate } from 'fp-ts/lib/Predicate'
+import * as S from 'fp-ts/lib/Semigroup'
+import * as Str from 'fp-ts/lib/string'
+import * as Ord from 'fp-ts/Ord'
 
-const start = performance.now()
+// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+type Customer = {
+  name: string
+  favoriteThings: string[]
+  registeredAt: number
+  lastUpdatedAt: number
+  hasMadePurchase: boolean
+}
 
-const timerToPromise = (timer: number) =>
-  timer < 1500
-    ? new Promise<string>((resolve) => {
-      setTimeout(() => resolve(`Promise with timer ${timer} resolved`), timer)
-    })
-    : new Promise<string>((_, reject) => {
-      setTimeout(() => reject(new Error(`Promise with timer ${timer} rejected`)), timer)
-    })
+const mockedCustomerRecordCollection: Customer[] = [
+  {
+    name: 'Andrew',
+    favoriteThings: ['cooking', 'reading'],
+    registeredAt: new Date(2020, 1, 20).getTime(),
+    lastUpdatedAt: new Date(2020, 2, 18).getTime(),
+    hasMadePurchase: false
+  },
+  {
+    name: '',
+    favoriteThings: ['functional programming'],
+    registeredAt: new Date(2018, 1, 22).getTime(),
+    lastUpdatedAt: new Date(2018, 2, 9).getTime(),
+    hasMadePurchase: false
+  },
+  {
+    name: 'Bobby Axelrod',
+    favoriteThings: ['playing guitar'],
+    registeredAt: new Date(1971, 1, 1).getTime(),
+    lastUpdatedAt: new Date(5000, 1, 1).getTime(),
+    hasMadePurchase: true
+  }
+]
 
-const timerToTaskEither = TE.tryCatchK(
-  timerToPromise,
-  reason => new Error(String(reason))
-)
+const getLongestString: M.Monoid<string> = {
+  concat: (str1: string, str2: string) => str1.length > str2.length ? str1 : str2,
+  empty: ''
+}
 
-const arrPromisesToPromisesAll = TE.tryCatchK(
-  (promiseArr: Promise<string>[]) => Promise.all(promiseArr),
-  reason => new Error(String(reason))
-)
-
-const timers = [1000, 1000, 1000, 100, 1000, 1000, 3000]
-
-// ! Example — the most simple
-const f = () => pipe(
-  timers,
-  A.map(timerToPromise),
-  arrPromisesToPromisesAll
-) // Run sequentially
-
-// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-
-// ! Example 2
-const x = pipe(
-  timers,
-  A.map(timerToTaskEither),
-  A.sequence(TE.ApplicativeSeq)
-) // Run in parallel (promise all)
-
-// ! Example 3
-const y = pipe(
-  timers,
-  A.map(timerToTaskEither),
-  A.sequence(TE.ApplicativePar)
-) // Run in parallel (promise all)
-
-// ! Example 4
-const z = pipe(
-  timers,
-  TE.traverseArray(timerToTaskEither)
-) // Run in parallel (promise all)
-
-const t = pipe(
-  // @ts-expect-error ...
-  Apply.sequenceT(TE.ApplicativePar)(...A.map(timerToTaskEither)(timers))
-) // Run in parallel (promise all)
-
-// ! Example 5
-
-const raceMonoid = T.getRaceMonoid<E.Either<Error, string>>()
-const b = pipe(
-  timers,
-  A.map(timerToTaskEither),
-  monoid.concatAll(raceMonoid)
-) // Under the hood runs promise race
-
-const bAlt = () => Promise.race(timers.map(timerToPromise)) // alternative
-
-bAlt().then((r) => {
-  const delta = performance.now() - start
-  console.log(r, `have passed ${delta / 1000}sec`)
+const monoidCustomer: M.Monoid<Customer> = M.struct<Customer>({
+  name: getLongestString,
+  favoriteThings: A.getMonoid<string>(),
+  registeredAt: M.min(N.Bounded),
+  lastUpdatedAt: M.max(N.Bounded),
+  hasMadePurchase: B.MonoidAny
 })
+
+const allMerged = pipe(
+  mockedCustomerRecordCollection,
+  pipe(
+    mockedCustomerRecordCollection[0]!,
+    S.concatAll(monoidCustomer)
+  )
+)
+console.log('🚀 ~ allMerged:', allMerged)

@@ -12,17 +12,29 @@ const t2 = T.make(O.some(1), [T.make(O.some(2), []), T.make(O.some(3), []), T.ma
 // [O.some(1), O.some(2), O.some(3), O.some(4)]
 // -->
 // O.some([1,2,3,4])
-const a = A.sequence(O.option)(t)
+const a = A.sequence(O.Applicative)(t)
 const b = pipe(
   t,
-  A.sequence(O.option),
-  O.map(ns =>
-    pipe(ns, A.reduce(0, (acc, cur) => (acc + cur))))
+  A.sequence(O.Applicative),
+  O.map(ns => pipe(
+    ns,
+    A.reduce(0, (acc, cur) => (acc + cur))
+  ))
 )
-const c = T.sequence(O.option)(t2)
+const c = T.sequence(O.Applicative)(t2)
 
-console.log(a)
-console.log(b)
+console.log(a) //* O.some([1,2,3,4])
+console.log(b) //* O.some(10)
+/**
+  O.some({
+    value: 1,
+    forest: [
+      { value: 2, forest: [] },
+      { value: 3, forest: [] },
+      { value: 4, forest: [] }
+    ]
+  })
+ */
 console.log(c)
 
 // ------------------------------

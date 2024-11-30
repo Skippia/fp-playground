@@ -1,4 +1,3 @@
-/* eslint-disable ts/no-shadow */
 import * as A from 'fp-ts/Array'
 import * as E from 'fp-ts/Either'
 import { pipe } from 'fp-ts/function'
@@ -234,9 +233,7 @@ const findOrders = async (req: FindOrdersRequest) => {
         )
       )
     )
-    // const result: E.Either<ErrorResult, TE.TaskEither<ErrorResult, readonly OrderResult[]>>
-    // const result: E.Either<ErrorResult, readonly OrderResult[]>
-    const result = await ordersResultTE()
+    const result = await ordersResultTE() // => Either<ErrorResult, readonly OrderResult[]>
     return result
   }
   catch (error) {

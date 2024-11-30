@@ -12,8 +12,8 @@ type User = {
   name: string
 }
 
-const contramap: <A, B>(f: (b: B) => A) => (E: Eq<A>) => Eq<B>
-  = f => E => fromEquals((x, y) => E.equals(f(x), f(y)))
+type TContramap = <A, B>(f: (b: B) => A) => (E: Eq<A>) => Eq<B>
+const contramap: TContramap = f => E => fromEquals((x, y) => E.equals(f(x), f(y))) // => Eq<B>
 
 const numberEq: Eq<number> = {
   equals: (a, b) => a === b
@@ -24,13 +24,11 @@ const numberEq: Eq<number> = {
 // const eqUser: Eq<User> = contramap((user: User) => user.id)(N.Eq)
 const eqUser: Eq<User> = contramap((user: User) => user.id)(numberEq)
 
-function getEq<A>(E: Eq<A>): Eq<ReadonlyArray<A>> {
-  return fromEquals(
-    (xs, ys) =>
-      /* returns boolean */
-      xs.every((x, i) => E.equals(x, ys[i]!))
+const getEq = <A>(E: Eq<A>): Eq<ReadonlyArray<A>> =>
+  fromEquals((xs, ys) =>
+  /* returns boolean */
+    xs.every((x, i) => E.equals(x, ys[i]!))
   )
-}
 
 /**
  * They are the same

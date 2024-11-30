@@ -19,11 +19,9 @@ const _ordNumber: _Ord<number> = {
 //* Note. A lawful equals can be derived from compare in the following way
 // equals: (x, y) => compare(x, y) === 0
 
-const ordNumber: Ord.Ord<number> = Ord.fromCompare((x, y) => (x < y ? -1 : x > y ? 1 : 0))
+const ordNumber: Ord.Ord<number> = Ord.fromCompare((x, y) => (x < y ? -1 : (x > y ? 1 : 0)))
 
-function min<A>(O: Ord.Ord<A>): (x: A, y: A) => A {
-  return (x, y) => (O.compare(x, y) === 1 ? y : x)
-}
+const min = <A>(O: Ord.Ord<A>) => (x: A, y: A): A => (O.compare(x, y) === 1 ? y : x)
 
 min(ordNumber)(11, 4) // ?
 
