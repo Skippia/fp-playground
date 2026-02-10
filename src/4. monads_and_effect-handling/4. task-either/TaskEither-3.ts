@@ -14,20 +14,20 @@ import * as TE from 'fp-ts/TaskEither'
  * A traversable container is a container that implements a set of functions related
  * to Traverse that obey the "Traversable laws".
  * For instances, Array and TaskEither are traversable container, so you can turn an
- * array of TaskEither<E,A> into a TaskEither<E, A[]>
- * (Similar to Promise.allSettled , which turn an array of Promise into a Promise of array of object).
+ * TaskEither<E,A>[] into a TaskEither<E, A[]>
+ * (Similar to Promise.allSettled, which turn an array of Promise into a Promise of array of object).
  */
 
 /**
  * There are two separate ways to implement the traverse function — Applicative and Monadic
- * (Don't worry, both Applicative and Monadic are big topics and will be covered in depth in separate articles).
  */
 
 /**
- * To put things simpler, you can consider that Promise.allSettled is implemented in Applicative way
+ * To put things simpler, you can consider that:
+ * ! Promise.allSettled is implemented in Applicative way
  * because it collects all the results of the promises regardless of its status (Rejected or Resolved);
- * while Promise.all is implemented in Monadic way because it returns
- * the result of the first rejected promise
+ * ! while Promise.all is implemented in Monadic way 
+ * because it returns the result of the first rejected promise
  */
 
 /**
@@ -108,8 +108,8 @@ void monadicWayImproved()
  * ? Traverse and Sequence
  * When we talk about Traverse, we also cover sequence.
  * sequence is very useful when we want to swap between two containers directly.
- * Suppose we have TaskEither<Error, string>[] , we can use sequence to turn it into TaskEither<Error, string[]> .
- * sequence is just traverse with identity function baked in.
+ * Suppose we have TaskEither<Error, string>[] , we can use sequence to turn it 
+ * into TaskEither<Error, string[]>. Sequence is just traverse with identity function baked in.
  */
 export declare const sequenceArray: <A, E>(
   arr: ReadonlyArray<TE.TaskEither<E, A>>

@@ -4,7 +4,7 @@ import { pipe } from 'fp-ts/lib/function'
 import * as O from 'fp-ts/lib/Option'
 import * as T from 'fp-ts/lib/Tree'
 
-const t = [O.some(1), O.some(2), O.some(3), O.some(4)]
+const t = [O.some(1), O.some(2), O.some(3), O.some(4)] // => O.Option<number>[]
 const t2 = T.make(O.some(1), [T.make(O.some(2), []), T.make(O.some(3), []), T.make(O.some(4), [])])
 
 // Array<HKT> --> HKT<Array>
@@ -12,7 +12,13 @@ const t2 = T.make(O.some(1), [T.make(O.some(2), []), T.make(O.some(3), []), T.ma
 // [O.some(1), O.some(2), O.some(3), O.some(4)]
 // -->
 // O.some([1,2,3,4])
-const a = A.sequence(O.Applicative)(t)
+
+const a = A.sequence(O.Applicative)(t) // => O.Option<number[]>
+const a2 = pipe(
+  t,
+  A.traverse(O.Applicative)(z => z)
+) // => O.Option<number[]>
+
 const b = pipe(
   t,
   A.sequence(O.Applicative),
@@ -20,8 +26,8 @@ const b = pipe(
     ns,
     A.reduce(0, (acc, cur) => (acc + cur))
   ))
-)
-const c = T.sequence(O.Applicative)(t2)
+) // => O.Option<number>
+const c = T.sequence(O.Applicative)(t2) // =>  O.Option<T.Tree<number>>
 
 console.log(a) //* O.some([1,2,3,4])
 console.log(b) //* O.some(10)
